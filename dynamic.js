@@ -476,7 +476,8 @@ function updateAverageRow(regionName, numLocations, monthLabels) {
         const avg = calculateAverage(ratings);
         const cell = avgRow.children[monthIndex];
         cell.textContent = avg;
-        cell.className = 'rating';
+        // Apply color coding to average row
+        cell.className = `rating ${getRatingClass(avg)}`;
     }
 }
 
