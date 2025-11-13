@@ -1,0 +1,2927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Reviews Analytics Platform - Dynamic Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #667eea;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            padding: 15px 30px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #667eea;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            background: #e9ecef;
+        }
+
+        .tab-button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Dashboard Styles */
+        .region-section {
+            margin: 30px 40px;
+            background: white;
+            border-radius: 12px;
+            overflow: visible;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .region-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .region-header:hover {
+            background: linear-gradient(135deg, #7688f0 0%, #8657b0 100%);
+            transform: scale(1.01);
+        }
+
+        .region-header h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        .hint {
+            text-align: center;
+            background: #e3f2fd;
+            padding: 12px;
+            margin: 20px 30px;
+            border-radius: 5px;
+            color: #1976d2;
+            font-weight: 500;
+        }
+
+        .table-wrapper {
+            display: flex;
+            border: 1px solid #ddd;
+            margin: 0 30px 30px 30px;
+        }
+
+        .fixed-left, .fixed-right {
+            flex-shrink: 0;
+            background: white;
+            overflow: visible;
+        }
+
+        .fixed-left {
+            border-right: 2px solid #667eea;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+        }
+
+        .fixed-left th:nth-child(1), .fixed-left td:nth-child(1) {
+            min-width: 180px;
+            max-width: 250px;
+        }
+
+        .fixed-left th:nth-child(2), .fixed-left td:nth-child(2) {
+            min-width: 120px;
+            max-width: 180px;
+        }
+
+        .fixed-left th:nth-child(3), .fixed-left td:nth-child(3) {
+            min-width: 50px;
+            width: 50px;
+        }
+
+        .fixed-left th:nth-child(4), .fixed-left td:nth-child(4) {
+            min-width: 60px;
+            width: 70px;
+        }
+
+        .fixed-right {
+            border-left: 2px solid #667eea;
+            box-shadow: -2px 0 4px rgba(0,0,0,0.1);
+        }
+
+        .fixed-right th, .fixed-right td {
+            min-width: 80px;
+            width: 90px;
+        }
+
+        .scrollable-middle {
+            flex: 1;
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+
+        .scrollable-middle::-webkit-scrollbar {
+            height: 14px;
+        }
+
+        .scrollable-middle::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 7px;
+        }
+
+        .scrollable-middle::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        table {
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .scrollable-middle table {
+            width: max-content;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 12px 8px;
+            border-bottom: 2px solid #667eea;
+            color: #667eea;
+            font-weight: 600;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e9ecef;
+            white-space: nowrap;
+        }
+
+        .fixed-left td, .fixed-right td {
+            text-align: center;
+        }
+
+        tr:hover td {
+            background: #f8f9fa;
+        }
+
+        .rating {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .rating-excellent {
+            color: #28a745;
+            background: #d4edda;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+
+        .rating-good {
+            color: #5a6268;
+            background: #e2e3e5;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+
+        .rating-fair {
+            color: #856404;
+            background: #fff3cd;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+
+        .rating-poor {
+            color: #721c24;
+            background: #f8d7da;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+
+        .average-row td {
+            background: #fff3cd !important;
+            font-weight: 700;
+            border-top: 2px solid #667eea;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-right: 15px;
+        }
+
+        .legend-color {
+            width: 25px;
+            height: 18px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Graph Styles */
+        .graph-controls {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .graph-controls h3 {
+            margin-bottom: 15px;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .location-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            background: #f0f0f0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            font-size: 0.9em;
+            flex: 1;
+        }
+
+        .color-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid #ddd;
+        }
+
+        .button-group {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .chart-container {
+            padding: 40px;
+            position: relative;
+            height: 600px;
+        }
+
+        .rankings-section {
+            padding: 40px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .rankings-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .date-range-selector {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .date-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-input-group label {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .date-input-group select {
+            padding: 8px 12px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .rankings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .ranking-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .ranking-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .ranking-list {
+            list-style: none;
+        }
+
+        .ranking-list li {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ranking-list li .rank {
+            font-weight: 700;
+            color: #667eea;
+            margin-right: 10px;
+            min-width: 25px;
+        }
+
+        .ranking-list li .location-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .ranking-list li .rating-value {
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 4px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .rating-value.excellent {
+            background: #d4edda;
+            color: #28a745;
+        }
+
+        .rating-value.good {
+            background: #e2e3e5;
+            color: #5a6268;
+        }
+
+        .rating-value.fair {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .rating-value.poor {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .rating-value.positive {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .rating-value.negative {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .rating-value.change {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #667eea;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.5em;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        /* Stats Section Styles */
+        .stats-section {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            margin: 20px 40px;
+            border-radius: 10px;
+        }
+
+        .stats-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .stat-card .stat-label {
+            margin-top: 5px;
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        /* Executive Report Styles */
+        .executive-report {
+            margin: 30px 40px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .executive-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .executive-header h2 {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+        }
+
+        .executive-header p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .executive-content {
+            padding: 30px;
+        }
+
+        .report-section {
+            margin-bottom: 35px;
+        }
+
+        .report-section h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #e3f2fd;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .metric-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .metric-value.positive {
+            color: #28a745;
+        }
+
+        .metric-value.negative {
+            color: #dc3545;
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .ranking-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .ranking-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .ranking-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .ranking-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .ranking-table .rank-number {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .ai-insights {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .ai-insights h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-insights ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .ai-insights li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .ai-insights li:before {
+            content: "✦";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .export-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            min-width: 200px;
+        }
+
+        .export-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .export-button:active {
+            transform: translateY(0);
+        }
+
+        .export-button-onepage {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+
+        .export-button-onepage:hover {
+            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+        }
+
+        .export-button-image {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .export-button-image:hover {
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+        }
+
+        .improvement-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .improvement-badge.positive {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .improvement-badge.negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-text">Loading Google Reviews Data from Yext API...</div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Google Reviews Analytics Platform</h1>
+            <p style="font-size: 0.9em; margin-bottom: 5px; opacity: 0.85;">Created by Moiz Uddin</p>
+            <p>Store Performance Analytics • <span id="date-range">Loading...</span></p>
+            <div id="data-freshness" style="margin-top: 15px; padding: 10px 20px; background: rgba(255,255,255,0.15); border-radius: 8px; display: inline-block;">
+                <span style="font-size: 0.9em;">📅 Data last updated: <strong id="last-updated">Loading...</strong></span>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation" id="tab-navigation">
+            <button class="tab-button active" onclick="switchTab('dashboard')">Home</button>
+            <button class="tab-button" onclick="switchTab('companywide')">Companywide</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard-tab" class="tab-content active">
+            <div id="regions-container"></div>
+
+            <div class="footer">
+                <p><strong>Dashboard Auto-Generated:</strong> <span id="current-date"></span></p>
+                <p>Data cached from Yext API • Automatically refreshes at the beginning of each month</p>
+                <p style="margin-top: 10px; font-size: 0.85em; opacity: 0.8;">
+                    <em>Note: This dashboard loads instantly from pre-cached data. For the latest data, run the data-fetcher.js script.</em>
+                </p>
+            </div>
+        </div>
+
+        <!-- Companywide Tab -->
+        <div id="companywide-tab" class="tab-content">
+            <!-- Executive Report Section -->
+            <div class="executive-report" id="executive-report">
+                <div class="executive-header">
+                    <h2>📊 Executive Performance Report</h2>
+                    <p id="report-date">Generated on October 31, 2025</p>
+                </div>
+
+                <div class="executive-content">
+                    <!-- Company Performance Overview -->
+                    <div class="report-section">
+                        <h3>Company Performance Overview</h3>
+                        <div class="metrics-grid">
+                            <div class="metric-box">
+                                <div class="metric-label">Companywide Average - October 2024</div>
+                                <div class="metric-value" id="exec-oct-2024-avg">-</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="metric-label">Companywide Average - Current Month</div>
+                                <div class="metric-value rating-good" id="exec-current-month-avg">-</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="metric-label">Improvement Difference</div>
+                                <div class="metric-value positive" id="exec-improvement-diff">-</div>
+                                <span class="improvement-badge positive" id="exec-improvement-percent"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Market Performance Overview -->
+                    <div class="report-section">
+                        <h3>Market Performance Overview</h3>
+
+                        <h4 style="color: #764ba2; margin-top: 20px; margin-bottom: 10px;">Market Ranking (by Current Rating)</h4>
+                        <table class="ranking-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Market</th>
+                                    <th>Current Rating</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="exec-market-ranking-table">
+                                <tr><td colspan="4" style="text-align:center;">Loading...</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h4 style="color: #764ba2; margin-top: 25px; margin-bottom: 10px;">Market Improvement Ranking (Oct 2024 - Current Month)</h4>
+                        <table class="ranking-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Market</th>
+                                    <th>Oct 2024 Rating</th>
+                                    <th>Current Rating</th>
+                                    <th>Improvement</th>
+                                </tr>
+                            </thead>
+                            <tbody id="exec-market-improvement-table">
+                                <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Location Performance Overview -->
+                    <div class="report-section">
+                        <h3>Location Performance Overview</h3>
+
+                        <h4 style="color: #764ba2; margin-top: 20px; margin-bottom: 10px;">Top 10 Performing Locations</h4>
+                        <table class="ranking-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Location</th>
+                                    <th>City, State</th>
+                                    <th>Market</th>
+                                    <th>Current Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody id="exec-top-locations-table">
+                                <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h4 style="color: #764ba2; margin-top: 25px; margin-bottom: 10px;">Bottom 10 Performing Locations (Need Improvement)</h4>
+                        <table class="ranking-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Location</th>
+                                    <th>City, State</th>
+                                    <th>Market</th>
+                                    <th>Current Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody id="exec-bottom-locations-table">
+                                <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Export Buttons -->
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
+                        <button class="export-button export-button-pdf" onclick="exportExecutiveReportToPDF()">
+                            📄 Export Multi-Page PDF
+                        </button>
+                        <button class="export-button export-button-onepage" onclick="exportExecutiveReportOnePage()">
+                            📄 Export 1-Page PDF
+                        </button>
+                        <button class="export-button export-button-image" onclick="exportExecutiveReportAsImage()">
+                            🖼️ Export as Image
+                        </button>
+                    </div>
+                    <p style="text-align: center; color: #666; font-size: 0.9em; margin-top: 10px; font-style: italic;">
+                        Multi-page for detailed reports • 1-page for quick summaries • Image for email sharing
+                    </p>
+                </div>
+            </div>
+
+            <div class="region-section" style="margin: 30px 40px;">
+                <div class="region-header">
+                    <h2>Companywide Google Reviews</h2>
+                    <span class="region-manager">
+                        <span class="legend-item"><span class="legend-color rating-excellent"></span>Excellent (4.0+)</span>
+                        <span class="legend-item"><span class="legend-color rating-good"></span>Good (3.0-3.9)</span>
+                        <span class="legend-item"><span class="legend-color rating-fair"></span>Fair (2.5-2.9)</span>
+                        <span class="legend-item"><span class="legend-color rating-poor"></span>Poor (&lt; 2.5)</span>
+                    </span>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="companywideChart"></canvas>
+                </div>
+
+                <div class="stats-section">
+                    <h3>Key Statistics</h3>
+                    <div class="stats-grid" id="companywideStats">
+                        <!-- Stats will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Store Rankings Section -->
+            <div class="rankings-section">
+                <h2>Store & Region Rankings</h2>
+                <div class="date-range-selector">
+                    <div class="date-input-group">
+                        <label>Start Month:</label>
+                        <select id="companywide-startMonth" onchange="updateCompanywideRankings()"></select>
+                        <select id="companywide-startYear" onchange="updateCompanywideRankings()"></select>
+                    </div>
+                    <div class="date-input-group">
+                        <label>End Month:</label>
+                        <select id="companywide-endMonth" onchange="updateCompanywideRankings()"></select>
+                        <select id="companywide-endYear" onchange="updateCompanywideRankings()"></select>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 40px; margin-bottom: 20px; color: #667eea; font-size: 1.5em;">Store Rankings</h3>
+                <div class="rankings-grid">
+                    <div class="ranking-card">
+                        <h3>Best 5 Stores</h3>
+                        <ul class="ranking-list" id="companywide-best5-stores"></ul>
+                    </div>
+                    <div class="ranking-card">
+                        <h3>Worst 5 Stores</h3>
+                        <ul class="ranking-list" id="companywide-worst5-stores"></ul>
+                    </div>
+                    <div class="ranking-card">
+                        <h3>Most Improved Stores</h3>
+                        <ul class="ranking-list" id="companywide-improved-stores"></ul>
+                    </div>
+                    <div class="ranking-card">
+                        <h3>Most Declined Stores</h3>
+                        <ul class="ranking-list" id="companywide-declined-stores"></ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 40px; margin-bottom: 20px; color: #667eea; font-size: 1.5em;">Region Rankings</h3>
+                <div class="rankings-grid">
+                    <div class="ranking-card">
+                        <h3>Best Regions</h3>
+                        <ul class="ranking-list" id="companywide-best-regions"></ul>
+                    </div>
+                    <div class="ranking-card">
+                        <h3>Worst Regions</h3>
+                        <ul class="ranking-list" id="companywide-worst-regions"></ul>
+                    </div>
+                    <div class="ranking-card">
+                        <h3>Most Improved Regions</h3>
+                        <ul class="ranking-list" id="companywide-improved-regions"></ul>
+                    </div>
+                    <div class="ranking-card">
+                        <h3>Most Declined Regions</h3>
+                        <ul class="ranking-list" id="companywide-declined-regions"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p><strong>Data Range:</strong> October 2024 - Present</p>
+                <p>Companywide average calculated from all active locations</p>
+            </div>
+        </div>
+
+        <!-- Graph Tabs (dynamically created) -->
+    </div>
+
+    <script src="dynamic.js"></script>
+    <script src="competitors.js"></script>
+    <script>
+        // Store all fetched data to avoid re-fetching
+        const regionalGraphData = {};
+
+        // Switch between tabs
+        function switchTab(tabName) {
+            console.log('switchTab called with:', tabName);
+
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Deactivate all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Determine the tab ID (convert spaces to hyphens for IDs)
+            let tabId;
+            if (tabName === 'dashboard') {
+                tabId = 'dashboard';
+            } else if (tabName === 'companywide') {
+                tabId = 'companywide';
+            } else {
+                tabId = tabName.replace(/\s+/g, '-').replace(/\//g, '-');
+            }
+
+            // Show selected tab
+            const selectedTab = document.getElementById(`${tabId}-tab`);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+                console.log('Activated tab:', `${tabId}-tab`);
+            } else {
+                console.error('Tab not found:', `${tabId}-tab`);
+            }
+
+            // Activate selected button
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => {
+                if (btn.textContent === tabName ||
+                    (tabName === 'dashboard' && btn.textContent === 'Home') ||
+                    (tabName === 'companywide' && btn.textContent === 'Companywide')) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Fetch graph data for a region
+        async function fetchRegionGraphData(regionName, locations) {
+            console.log(`Fetching graph data for ${regionName}...`);
+            const monthLabels = generateMonthLabels();
+            const locationsData = [];
+
+            const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c',
+                          '#34495e', '#e67e22', '#95a5a6', '#16a085', '#c0392b', '#27ae60',
+                          '#d35400', '#8e44ad', '#2980b9', '#c0392b', '#16a085', '#f1c40f',
+                          '#e74c3c', '#3498db', '#2ecc71'];
+
+            for (let i = 0; i < locations.length; i++) {
+                const location = locations[i];
+                const loadingMsg = `Loading ${regionName}: ${location.city} (${i + 1}/${locations.length})...`;
+                document.getElementById('loading-text').textContent = loadingMsg;
+                console.log(loadingMsg);
+
+                const ratings = [];
+                for (const month of monthLabels) {
+                    const rating = await fetchRating(location.entityId, month.apiDate);
+                    ratings.push(rating);
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+
+                locationsData.push({
+                    name: location.address.includes('Serviceable Area') ? 'Serviceable Area' : location.address,
+                    city: location.city,
+                    data: ratings,
+                    color: colors[i % colors.length]
+                });
+            }
+
+            // Calculate average
+            const averageData = [];
+            for (let i = 0; i < monthLabels.length; i++) {
+                const validRatings = locationsData.map(loc => loc.data[i]).filter(r => r !== null);
+                if (validRatings.length > 0) {
+                    const avg = validRatings.reduce((sum, r) => sum + parseFloat(r), 0) / validRatings.length;
+                    averageData.push(parseFloat(avg.toFixed(1)));
+                } else {
+                    averageData.push(null);
+                }
+            }
+
+            return {
+                months: monthLabels.map(m => m.label),
+                locations: locationsData,
+                average: {
+                    name: `${regionName.toUpperCase()} AVERAGE`,
+                    data: averageData,
+                    color: '#000000'
+                }
+            };
+        }
+
+        // Render region graph tab
+        function renderRegionGraph(regionName, data) {
+            const tabId = regionName.replace(/\s+/g, '-').replace(/\//g, '-');
+            let tab = document.getElementById(`${tabId}-tab`);
+
+            if (!tab) {
+                tab = document.createElement('div');
+                tab.id = `${tabId}-tab`;
+                tab.className = 'tab-content';
+                document.querySelector('.container').appendChild(tab);
+            }
+
+            tab.innerHTML = `
+                <div class="graph-controls">
+                    <h3>Select Locations to Display:</h3>
+                    <div class="location-checkboxes" id="${tabId}-checkboxes"></div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="selectAllLocations(\`${regionName}\`)">Select All</button>
+                        <button class="btn btn-secondary" onclick="deselectAllLocations(\`${regionName}\`)">Deselect All</button>
+                        <button class="btn btn-primary" onclick="toggleRegionAverage(\`${regionName}\`)">Toggle Average</button>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="${tabId}-chart"></canvas>
+                </div>
+
+                <div class="rankings-section">
+                    <h2>Store Rankings</h2>
+                    <div class="date-range-selector">
+                        <div class="date-input-group">
+                            <label>Start Month:</label>
+                            <select id="${tabId}-startMonth" onchange="updateRegionRankings(\`${regionName}\`)"></select>
+                            <select id="${tabId}-startYear" onchange="updateRegionRankings(\`${regionName}\`)"></select>
+                        </div>
+                        <div class="date-input-group">
+                            <label>End Month:</label>
+                            <select id="${tabId}-endMonth" onchange="updateRegionRankings(\`${regionName}\`)"></select>
+                            <select id="${tabId}-endYear" onchange="updateRegionRankings(\`${regionName}\`)"></select>
+                        </div>
+                    </div>
+
+                    <div class="rankings-grid">
+                        <div class="ranking-card">
+                            <h3>Best 5 Stores</h3>
+                            <ul class="ranking-list" id="${tabId}-best5"></ul>
+                        </div>
+                        <div class="ranking-card">
+                            <h3>Worst 5 Stores</h3>
+                            <ul class="ranking-list" id="${tabId}-worst5"></ul>
+                        </div>
+                        <div class="ranking-card">
+                            <h3>Most Improved</h3>
+                            <ul class="ranking-list" id="${tabId}-improved"></ul>
+                        </div>
+                        <div class="ranking-card">
+                            <h3>Most Declined</h3>
+                            <ul class="ranking-list" id="${tabId}-declined"></ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Initialize checkboxes
+            const checkboxContainer = document.getElementById(`${tabId}-checkboxes`);
+            data.locations.forEach((loc, i) => {
+                const div = document.createElement('div');
+                div.className = 'checkbox-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="${tabId}-loc${i}" checked onchange="updateRegionChart(\`${regionName}\`)">
+                    <div class="color-indicator" style="background-color: ${loc.color}"></div>
+                    <label for="${tabId}-loc${i}">${loc.city}</label>
+                `;
+                checkboxContainer.appendChild(div);
+            });
+
+            // Initialize chart
+            initializeRegionChart(regionName, data);
+
+            // Initialize date selectors
+            initializeRegionDateSelectors(regionName);
+
+            // Update rankings
+            updateRegionRankings(regionName);
+        }
+
+        // Initialize region chart
+        function initializeRegionChart(regionName, data) {
+            const tabId = regionName.replace(/\s+/g, '-').replace(/\//g, '-');
+            const ctx = document.getElementById(`${tabId}-chart`).getContext('2d');
+
+            const datasets = data.locations.map((loc) => ({
+                label: loc.city,
+                data: loc.data,
+                borderColor: loc.color,
+                backgroundColor: loc.color + '20',
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }));
+
+            datasets.push({
+                label: data.average.name,
+                data: data.average.data,
+                borderColor: data.average.color,
+                backgroundColor: data.average.color + '20',
+                borderWidth: 4,
+                tension: 0.4,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            });
+
+            regionalGraphData[regionName].chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.months,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            onClick: null,
+                            display: true,
+                            position: 'top',
+                            labels: { usePointStyle: true, padding: 15 }
+                        },
+                        title: {
+                            display: true,
+                            text: `Google Reviews Rating Trends - ${regionName}`,
+                            font: { size: 18, weight: 'bold' },
+                            padding: 20
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            min: 0.0,
+                            max: 5.0,
+                            ticks: { stepSize: 0.5 },
+                            title: { display: true, text: 'Rating' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Month' }
+                        }
+                    }
+                }
+            });
+
+            regionalGraphData[regionName].showAverage = true;
+        }
+
+        // Update region chart
+        function updateRegionChart(regionName) {
+            const data = regionalGraphData[regionName];
+            if (!data || !data.chart) return;
+
+            const tabId = regionName.replace(/\s+/g, '-').replace(/\//g, '-');
+            const datasets = [];
+
+            data.locations.forEach((loc, i) => {
+                const checkbox = document.getElementById(`${tabId}-loc${i}`);
+                if (checkbox && checkbox.checked) {
+                    datasets.push({
+                        label: loc.city,
+                        data: loc.data,
+                        borderColor: loc.color,
+                        backgroundColor: loc.color + '20',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    });
+                }
+            });
+
+            if (data.showAverage) {
+                datasets.push({
+                    label: data.average.name,
+                    data: data.average.data,
+                    borderColor: data.average.color,
+                    backgroundColor: data.average.color + '20',
+                    borderWidth: 4,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                });
+            }
+
+            data.chart.data.datasets = datasets;
+            data.chart.update();
+        }
+
+        // Select/deselect all locations
+        function selectAllLocations(regionName) {
+            const tabId = regionName.replace(/\s+/g, '-').replace(/\//g, '-');
+            const data = regionalGraphData[regionName];
+            data.locations.forEach((loc, i) => {
+                const checkbox = document.getElementById(`${tabId}-loc${i}`);
+                if (checkbox) checkbox.checked = true;
+            });
+            updateRegionChart(regionName);
+        }
+
+        function deselectAllLocations(regionName) {
+            const tabId = regionName.replace(/\s+/g, '-').replace(/\//g, '-');
+            const data = regionalGraphData[regionName];
+            data.locations.forEach((loc, i) => {
+                const checkbox = document.getElementById(`${tabId}-loc${i}`);
+                if (checkbox) checkbox.checked = false;
+            });
+            updateRegionChart(regionName);
+        }
+
+        function toggleRegionAverage(regionName) {
+            const data = regionalGraphData[regionName];
+            data.showAverage = !data.showAverage;
+            updateRegionChart(regionName);
+        }
+
+        // Initialize date selectors
+        function initializeRegionDateSelectors(regionName) {
+            const tabId = regionName.replace(/\s+/g, '-').replace(/\//g, '-');
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+
+            const startMonth = document.getElementById(`${tabId}-startMonth`);
+            const endMonth = document.getElementById(`${tabId}-endMonth`);
+            const startYear = document.getElementById(`${tabId}-startYear`);
+            const endYear = document.getElementById(`${tabId}-endYear`);
+
+            monthNames.forEach((month, i) => {
+                startMonth.add(new Option(month, i));
+                endMonth.add(new Option(month, i));
+            });
+
+            [2024, 2025].forEach(year => {
+                startYear.add(new Option(year, year));
+                endYear.add(new Option(year, year));
+            });
+
+            const now = new Date();
+            startMonth.value = 9; // October
+            startYear.value = 2024;
+            endMonth.value = now.getMonth();
+            endYear.value = now.getFullYear();
+        }
+
+        // Update region rankings
+        function updateRegionRankings(regionName) {
+            const data = regionalGraphData[regionName];
+            if (!data) return;
+
+            const tabId = regionName.replace(/\s+/g, '-').replace(/\//g, '-');
+            const startMonth = parseInt(document.getElementById(`${tabId}-startMonth`).value);
+            const startYear = parseInt(document.getElementById(`${tabId}-startYear`).value);
+            const endMonth = parseInt(document.getElementById(`${tabId}-endMonth`).value);
+            const endYear = parseInt(document.getElementById(`${tabId}-endYear`).value);
+
+            const startIdx = (startYear - 2024) * 12 + startMonth - 9;
+            const endIdx = (endYear - 2024) * 12 + endMonth - 9;
+
+            if (startIdx < 0 || endIdx < 0 || startIdx > endIdx) return;
+
+            const rankings = data.locations.map(loc => {
+                const avgRating = calculateAverageRating(loc.data, startIdx, endIdx);
+                const startRating = parseFloat(loc.data[startIdx]) || null;
+                const endRating = parseFloat(loc.data[endIdx]) || null;
+
+                // Only calculate change if both start and end ratings exist
+                let change = 0;
+                if (startRating !== null && endRating !== null) {
+                    change = endRating - startRating;
+                }
+
+                return {
+                    name: loc.city,
+                    avgRating,
+                    change,
+                    startRating,
+                    endRating,
+                    hasValidData: avgRating > 0
+                };
+            });
+
+            // Filter out locations with no valid data
+            const validRankings = rankings.filter(r => r.hasValidData);
+
+            const best5 = [...validRankings].sort((a, b) => b.avgRating - a.avgRating).slice(0, 5);
+            const worst5 = [...validRankings].sort((a, b) => a.avgRating - b.avgRating).slice(0, 5);
+            const improved = [...validRankings].filter(r => r.change > 0).sort((a, b) => b.change - a.change).slice(0, 5);
+            const declined = [...validRankings].filter(r => r.change < 0).sort((a, b) => a.change - b.change).slice(0, 5);
+
+            renderRankingList(`${tabId}-best5`, best5, 'avgRating');
+            renderRankingList(`${tabId}-worst5`, worst5, 'avgRating');
+            renderRankingList(`${tabId}-improved`, improved, 'change');
+            renderRankingList(`${tabId}-declined`, declined, 'change');
+        }
+
+        function calculateAverageRating(data, startIdx, endIdx) {
+            let sum = 0, count = 0;
+            for (let i = startIdx; i <= endIdx && i < data.length; i++) {
+                if (data[i] !== null && data[i] !== undefined) {
+                    sum += parseFloat(data[i]);
+                    count++;
+                }
+            }
+            return count > 0 ? sum / count : 0;
+        }
+
+        function getRatingClass(rating) {
+            if (rating >= 4.0) return 'excellent';
+            if (rating >= 3.0) return 'good';
+            if (rating >= 2.5) return 'fair';
+            return 'poor';
+        }
+
+        function renderRankingList(elementId, data, metric) {
+            const list = document.getElementById(elementId);
+            if (!list) return;
+
+            list.innerHTML = '';
+
+            if (data.length === 0) {
+                list.innerHTML = '<li style="justify-content: center; font-style: italic; color: #666;">No data</li>';
+                return;
+            }
+
+            data.forEach((item, i) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span class="rank">#${i + 1}</span>
+                    <span class="location-name">${item.name}</span>
+                    <span class="rating-value ${metric === 'avgRating' ? getRatingClass(item.avgRating) : (item.change > 0 ? 'positive' : 'negative')}">
+                        ${metric === 'avgRating' ? item.avgRating.toFixed(2) : (item.change >= 0 ? '+' : '') + item.change.toFixed(2)}
+                    </span>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        // NOTE: populateDashboard is now handled by dynamic.js with caching
+        // The old override has been removed to allow the cached version to work
+
+        // Create our own region section function
+        function createRegionSectionCustom(regionName, regionData, monthLabels) {
+            // Create tab button
+            const tabNav = document.getElementById('tab-navigation');
+            const existingBtn = Array.from(document.querySelectorAll('.tab-button')).find(btn => btn.textContent === regionName);
+
+            if (!existingBtn) {
+                const btn = document.createElement('button');
+                btn.className = 'tab-button';
+                btn.textContent = regionName;
+                btn.onclick = () => switchTab(regionName);
+                tabNav.appendChild(btn);
+            }
+
+            // Create section
+            const section = document.createElement('div');
+            section.className = 'region-section';
+            section.id = `region-${regionName.replace(/\s+/g, '-').replace(/\//g, '-')}`;
+
+            // Store region name as data attribute to avoid issues with special characters
+            section.dataset.regionName = regionName;
+
+            section.innerHTML = `
+                <div class="region-header" style="cursor: pointer;">
+                    <h2>${regionName} <span style="font-size: 0.5em; font-weight: 400; opacity: 0.85; font-style: italic;">(click to see graph)</span></h2>
+                    <span class="region-manager">
+                        <span class="legend-item"><span class="legend-color rating-excellent"></span>Excellent (4.0+)</span>
+                        <span class="legend-item"><span class="legend-color rating-good"></span>Good (3.0-3.9)</span>
+                        <span class="legend-item"><span class="legend-color rating-fair"></span>Fair (2.5-2.9)</span>
+                        <span class="legend-item"><span class="legend-color rating-poor"></span>Poor (&lt; 2.5)</span>
+                    </span>
+                </div>
+                <div class="hint">← Scroll the middle section to view all months (October 2024 - Present) →</div>
+                <div class="table-wrapper">
+                    <div class="fixed-left">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Address</th>
+                                    <th>City</th>
+                                    <th>State</th>
+                                    <th>Zip</th>
+                                </tr>
+                            </thead>
+                            <tbody id="${regionName}-left-tbody">
+                                ${regionData.locations.map(loc => `
+                                    <tr>
+                                        <td>${loc.address.includes('Serviceable Area') ? 'Serviceable Area' : loc.address}</td>
+                                        <td>${loc.city}</td>
+                                        <td>${loc.state}</td>
+                                        <td>${loc.zip}</td>
+                                    </tr>
+                                `).join('')}
+                                <tr class="average-row">
+                                    <td colspan="4"><strong>${regionName.toUpperCase()} AVERAGE</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="scrollable-middle">
+                        <table>
+                            <thead>
+                                <tr>
+                                    ${monthLabels.map(m => `<th>${m.label}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody id="${regionName}-middle-tbody">
+                                ${regionData.locations.map(() => `
+                                    <tr>
+                                        ${monthLabels.map(() => `<td class="rating">-</td>`).join('')}
+                                    </tr>
+                                `).join('')}
+                                <tr class="average-row">
+                                    ${monthLabels.map(() => `<td class="rating">-</td>`).join('')}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="fixed-right">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>XFINITY</th>
+                                    <th>Spectrum</th>
+                                    <th>Verizon</th>
+                                    <th>AT&T</th>
+                                </tr>
+                            </thead>
+                            <tbody id="${regionName}-right-tbody">
+                                ${regionData.locations.map(() => `
+                                    <tr>
+                                        <td class="rating ${getRatingClassLocal(regionData.competitors.xfinity)}">${formatRating(regionData.competitors.xfinity)}</td>
+                                        <td class="rating ${getRatingClassLocal(regionData.competitors.spectrum)}">${formatRating(regionData.competitors.spectrum)}</td>
+                                        <td class="rating ${getRatingClassLocal(regionData.competitors.verizon)}">${formatRating(regionData.competitors.verizon)}</td>
+                                        <td class="rating ${getRatingClassLocal(regionData.competitors.att)}">${formatRating(regionData.competitors.att)}</td>
+                                    </tr>
+                                `).join('')}
+                                <tr class="average-row">
+                                    <td class="rating">${formatRating(regionData.competitors.xfinity)}</td>
+                                    <td class="rating">${formatRating(regionData.competitors.spectrum)}</td>
+                                    <td class="rating">${formatRating(regionData.competitors.verizon)}</td>
+                                    <td class="rating">${formatRating(regionData.competitors.att)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            // Add click handler to region header
+            const regionHeader = section.querySelector('.region-header');
+            regionHeader.addEventListener('click', () => switchTab(regionName));
+
+            return section;
+        }
+
+        // Local helper for rating class (to avoid conflicts)
+        function getRatingClassLocal(rating) {
+            if (!rating || rating === '-') return '';
+            const val = parseFloat(rating);
+            if (val >= 4.0) return 'rating-excellent';
+            if (val >= 3.0) return 'rating-good';
+            if (val >= 2.5) return 'rating-fair';
+            return 'rating-poor';
+        }
+
+        // Load all regions at once
+        async function loadAllRegionsAndGraphs() {
+            showLoading();
+            document.getElementById('loading-text').textContent = 'Loading Dashboard and Graphs... This will take 3-5 minutes...';
+
+            const monthLabels = generateMonthLabels();
+            const container = document.getElementById('regions-container');
+
+            // Update header with date range
+            const dateRange = document.getElementById('date-range');
+            if (dateRange) {
+                dateRange.textContent = `October 2024 - ${new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+            }
+
+            try {
+                for (const [regionName, regionData] of Object.entries(REGIONS)) {
+                    console.log(`\n=== Processing region: ${regionName} ===`);
+
+                    // Create region section in dashboard using our custom function
+                    const regionSection = createRegionSectionCustom(regionName, regionData, monthLabels);
+                    container.appendChild(regionSection);
+
+                    // Fetch dashboard data for each location
+                    for (let locIndex = 0; locIndex < regionData.locations.length; locIndex++) {
+                        const location = regionData.locations[locIndex];
+                        document.getElementById('loading-text').textContent =
+                            `Loading Dashboard: ${regionName} - ${location.city} (${locIndex + 1}/${regionData.locations.length})...`;
+
+                        const ratings = [];
+                        for (const month of monthLabels) {
+                            const rating = await fetchRating(location.entityId, month.apiDate);
+                            ratings.push(rating);
+                            await new Promise(resolve => setTimeout(resolve, 100));
+                        }
+
+                        // Update table row with ratings AND COLOR CODING
+                        const tbody = document.getElementById(`${regionName}-middle-tbody`);
+                        if (tbody) {
+                            const row = tbody.children[locIndex];
+                            if (row) {
+                                ratings.forEach((rating, index) => {
+                                    const cell = row.children[index];
+                                    const formattedRating = formatRating(rating);
+                                    cell.textContent = formattedRating;
+
+                                    // Apply color coding
+                                    cell.className = 'rating';
+                                    if (formattedRating !== '-') {
+                                        const ratingValue = parseFloat(formattedRating);
+                                        if (ratingValue >= 4.0) {
+                                            cell.classList.add('rating-excellent');
+                                        } else if (ratingValue >= 3.0) {
+                                            cell.classList.add('rating-good');
+                                        } else if (ratingValue >= 2.5) {
+                                            cell.classList.add('rating-fair');
+                                        } else {
+                                            cell.classList.add('rating-poor');
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    // Calculate and update average row
+                    updateAverageRow(regionName, regionData.locations.length, monthLabels);
+
+                    // Now fetch graph data for this region
+                    document.getElementById('loading-text').textContent = `Loading Graph Data for ${regionName}...`;
+                    const graphData = await fetchRegionGraphData(regionName, regionData.locations);
+                    regionalGraphData[regionName] = graphData;
+
+                    // Render graph tab
+                    renderRegionGraph(regionName, graphData);
+                    console.log(`Completed ${regionName}`);
+                }
+
+                // Sync row heights
+                syncRowHeights();
+
+                // Populate competitor data for all locations
+                document.getElementById('loading-text').textContent = 'Populating Competitor Data...';
+                if (typeof populateCompetitorData === 'function') {
+                    populateCompetitorData();
+                } else {
+                    console.error('populateCompetitorData function not found - make sure competitors.js is loaded');
+                }
+
+                // Generate companywide data
+                document.getElementById('loading-text').textContent = 'Generating Companywide Statistics...';
+                await generateCompanywideData();
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Error loading data. Please refresh the page.');
+            }
+
+            hideLoading();
+            console.log('=== All data loaded successfully ===');
+        }
+
+        // Generate companywide data from all regions
+        async function generateCompanywideData() {
+            console.log('Generating companywide data...');
+
+            const monthLabels = generateMonthLabels();
+            const companywideAverages = [];
+
+            // Calculate average for each month using regional averages
+            for (let monthIndex = 0; monthIndex < monthLabels.length; monthIndex++) {
+                let totalSum = 0;
+                let totalCount = 0;
+
+                // Go through each region and use their average
+                for (const [regionName, graphData] of Object.entries(regionalGraphData)) {
+                    if (graphData.average && graphData.average.data) {
+                        const regionAvg = graphData.average.data[monthIndex];
+                        if (regionAvg !== null && regionAvg !== undefined) {
+                            totalSum += parseFloat(regionAvg);
+                            totalCount++;
+                        }
+                    }
+                }
+
+                // Calculate average for this month
+                if (totalCount > 0) {
+                    companywideAverages.push(parseFloat((totalSum / totalCount).toFixed(1)));
+                } else {
+                    companywideAverages.push(null);
+                }
+            }
+
+            console.log('Companywide averages:', companywideAverages);
+
+            // Render the chart
+            renderCompanywideChart(monthLabels.map(m => m.label), companywideAverages);
+
+            // Calculate and render statistics
+            renderCompanywideStats(companywideAverages, monthLabels);
+
+            // Initialize date selectors and rankings
+            initializeCompanywideDateSelectors();
+            updateCompanywideRankings();
+
+            // Populate executive report
+            populateExecutiveReport(companywideAverages, monthLabels);
+        }
+
+        // Populate Executive Report
+        function populateExecutiveReport(companywideAverages, monthLabels) {
+            console.log('Populating executive report...');
+
+            // Set report date
+            const today = new Date();
+            document.getElementById('report-date').textContent = `Generated on ${today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+
+            // October 2024 is index 0, current month is last index
+            const oct2024Rating = companywideAverages[0];
+            const currentRating = companywideAverages[companywideAverages.length - 1];
+            const improvement = currentRating - oct2024Rating;
+            const improvementPercent = ((improvement / oct2024Rating) * 100).toFixed(1);
+
+            // Update company performance metrics
+            document.getElementById('exec-oct-2024-avg').textContent = oct2024Rating.toFixed(1);
+            document.getElementById('exec-current-month-avg').textContent = currentRating.toFixed(1);
+            document.getElementById('exec-improvement-diff').textContent = `${improvement >= 0 ? '+' : ''}${improvement.toFixed(1)}`;
+            document.getElementById('exec-improvement-percent').textContent = `${improvement >= 0 ? '+' : ''}${improvementPercent}%`;
+
+            // Get market rankings
+            const marketRankings = [];
+            for (const [regionName, graphData] of Object.entries(regionalGraphData)) {
+                if (graphData.average && graphData.average.data) {
+                    const currentIdx = companywideAverages.length - 1;
+                    const currentMarketRating = graphData.average.data[currentIdx];
+                    const oct2024MarketRating = graphData.average.data[0];
+
+                    if (currentMarketRating !== null && oct2024MarketRating !== null) {
+                        marketRankings.push({
+                            name: regionName,
+                            currentRating: currentMarketRating,
+                            oct2024Rating: oct2024MarketRating,
+                            improvement: currentMarketRating - oct2024MarketRating
+                        });
+                    }
+                }
+            }
+
+            // Sort by current rating
+            const rankedByRating = [...marketRankings].sort((a, b) => b.currentRating - a.currentRating);
+            const marketRankingHTML = rankedByRating.map((market, index) => {
+                const statusClass = market.currentRating >= 4.0 ? 'rating-excellent' : market.currentRating >= 3.5 ? 'rating-good' : 'rating-fair';
+                const statusText = market.currentRating >= 4.0 ? '⭐ Excellent' : market.currentRating >= 3.5 ? '✓ Good' : '→ Fair';
+                return `
+                    <tr>
+                        <td class="rank-number">${index + 1}</td>
+                        <td>${market.name}</td>
+                        <td class="${statusClass}">${market.currentRating.toFixed(1)}</td>
+                        <td>${statusText}</td>
+                    </tr>
+                `;
+            }).join('');
+            document.getElementById('exec-market-ranking-table').innerHTML = marketRankingHTML;
+
+            // Sort by improvement
+            const rankedByImprovement = [...marketRankings].sort((a, b) => b.improvement - a.improvement);
+            const marketImprovementHTML = rankedByImprovement.map((market, index) => {
+                const improvementClass = market.improvement > 0 ? 'positive' : market.improvement < 0 ? 'negative' : '';
+                const arrow = market.improvement > 0 ? '↗' : market.improvement < 0 ? '↘' : '→';
+                return `
+                    <tr>
+                        <td class="rank-number">${index + 1}</td>
+                        <td>${market.name}</td>
+                        <td>${market.oct2024Rating.toFixed(1)}</td>
+                        <td>${market.currentRating.toFixed(1)}</td>
+                        <td class="${improvementClass}">${arrow} ${market.improvement >= 0 ? '+' : ''}${market.improvement.toFixed(1)}</td>
+                    </tr>
+                `;
+            }).join('');
+            document.getElementById('exec-market-improvement-table').innerHTML = marketImprovementHTML;
+
+            // Get all locations
+            const allLocations = [];
+            for (const [regionName, graphData] of Object.entries(regionalGraphData)) {
+                if (graphData.locations) {
+                    graphData.locations.forEach(loc => {
+                        const currentIdx = companywideAverages.length - 1;
+                        const currentRating = loc.data[currentIdx];
+                        if (currentRating !== null) {
+                            allLocations.push({
+                                city: loc.city,
+                                address: loc.name,
+                                market: regionName,
+                                rating: parseFloat(currentRating)
+                            });
+                        }
+                    });
+                }
+            }
+
+            // Top 10 locations
+            const topLocations = [...allLocations].sort((a, b) => b.rating - a.rating).slice(0, 10);
+            const topLocationsHTML = topLocations.map((loc, index) => {
+                const ratingClass = loc.rating >= 4.0 ? 'rating-excellent' : 'rating-good';
+                return `
+                    <tr>
+                        <td class="rank-number">${index + 1}</td>
+                        <td>${loc.address}</td>
+                        <td>${loc.city}</td>
+                        <td>${loc.market}</td>
+                        <td class="${ratingClass}">${loc.rating.toFixed(1)}</td>
+                    </tr>
+                `;
+            }).join('');
+            document.getElementById('exec-top-locations-table').innerHTML = topLocationsHTML;
+
+            // Bottom 10 locations
+            const bottomLocations = [...allLocations].sort((a, b) => a.rating - b.rating).slice(0, 10);
+            const bottomLocationsHTML = bottomLocations.map((loc, index) => {
+                const ratingClass = loc.rating < 2.5 ? 'rating-poor' : loc.rating < 3.0 ? 'rating-fair' : 'rating-good';
+                return `
+                    <tr>
+                        <td class="rank-number">${index + 1}</td>
+                        <td>${loc.address}</td>
+                        <td>${loc.city}</td>
+                        <td>${loc.market}</td>
+                        <td class="${ratingClass}">${loc.rating.toFixed(1)}</td>
+                    </tr>
+                `;
+            }).join('');
+            document.getElementById('exec-bottom-locations-table').innerHTML = bottomLocationsHTML;
+        }
+
+        // Helper function to clean text for PDF export
+        function cleanTextForPDF(text) {
+            if (!text) return '';
+            return text
+                .replace(/⭐/g, 'Excellent')
+                .replace(/✓/g, 'Good')
+                .replace(/→/g, 'Fair')
+                .replace(/↗/g, '+')
+                .replace(/↘/g, '-')
+                .replace(/✦/g, '*')
+                .replace(/📊/g, '')
+                .replace(/🤖/g, '')
+                .replace(/[^\x00-\x7F]/g, '') // Remove any non-ASCII characters
+                .trim();
+        }
+
+        // Enhanced PDF Export Function - Professional Executive Report
+        async function exportExecutiveReportToPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const button = document.querySelector('.export-button-pdf');
+                const originalText = button.innerHTML;
+
+                button.innerHTML = '⏳ Generating Professional PDF...';
+                button.disabled = true;
+
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = 210;
+                const pageHeight = 297;
+                const margin = 20;
+                const contentWidth = pageWidth - (2 * margin);
+                let yPos = margin;
+
+                // Helper function to add page header
+                const addPageHeader = (pageNum) => {
+                    pdf.setFillColor(102, 126, 234);
+                    pdf.rect(0, 0, pageWidth, 15, 'F');
+                    pdf.setTextColor(255, 255, 255);
+                    pdf.setFontSize(10);
+                    pdf.text('Google Reviews Analytics Platform - Executive Report', margin, 10);
+                    pdf.setTextColor(0, 0, 0);
+                };
+
+                // Helper function to add page footer
+                const addPageFooter = (pageNum) => {
+                    pdf.setFontSize(8);
+                    pdf.setTextColor(128, 128, 128);
+                    pdf.text(`Page ${pageNum}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                    const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                    pdf.text(`Generated: ${dateStr}`, margin, pageHeight - 10);
+                    pdf.text('Confidential', pageWidth - margin, pageHeight - 10, { align: 'right' });
+                };
+
+                // Helper to check if we need a new page
+                const checkNewPage = (neededSpace) => {
+                    if (yPos + neededSpace > pageHeight - 20) {
+                        pdf.addPage();
+                        pageNum++;
+                        addPageHeader(pageNum);
+                        addPageFooter(pageNum);
+                        yPos = 25;
+                        return true;
+                    }
+                    return false;
+                };
+
+                let pageNum = 1;
+
+                // Title Page
+                addPageHeader(pageNum);
+                yPos = 60;
+                pdf.setFillColor(102, 126, 234);
+                pdf.rect(margin, yPos, contentWidth, 50, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(24);
+                pdf.setFont(undefined, 'bold');
+                pdf.text('Executive Performance Report', pageWidth / 2, yPos + 20, { align: 'center' });
+                pdf.setFontSize(14);
+                pdf.setFont(undefined, 'normal');
+                const reportDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                pdf.text(`Generated on ${reportDate}`, pageWidth / 2, yPos + 35, { align: 'center' });
+
+                yPos += 70;
+                pdf.setTextColor(0, 0, 0);
+                pdf.setFontSize(12);
+                pdf.text('Created by: Moiz Uddin', pageWidth / 2, yPos, { align: 'center' });
+
+                addPageFooter(pageNum);
+
+                // Page 2 - Company Performance Overview
+                pdf.addPage();
+                pageNum++;
+                addPageHeader(pageNum);
+                yPos = 25;
+
+                pdf.setFontSize(18);
+                pdf.setFont(undefined, 'bold');
+                pdf.setTextColor(102, 126, 234);
+                pdf.text('Company Performance Overview', margin, yPos);
+                yPos += 10;
+
+                // Get data from the page
+                const oct2024Avg = document.getElementById('exec-oct-2024-avg').textContent;
+                const currentAvg = document.getElementById('exec-current-month-avg').textContent;
+                const improvementDiff = document.getElementById('exec-improvement-diff').textContent;
+                const improvementPercent = document.getElementById('exec-improvement-percent').textContent;
+
+                // Draw metrics boxes
+                pdf.setFontSize(10);
+                pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(0, 0, 0);
+
+                const boxWidth = (contentWidth - 10) / 3;
+                const boxHeight = 30;
+
+                // Box 1: October 2024
+                pdf.setFillColor(248, 249, 250);
+                pdf.rect(margin, yPos, boxWidth, boxHeight, 'F');
+                pdf.setFontSize(9);
+                pdf.setTextColor(102, 126, 234);
+                pdf.text('October 2024 Average', margin + boxWidth/2, yPos + 8, { align: 'center' });
+                pdf.setFontSize(20);
+                pdf.setTextColor(0, 0, 0);
+                pdf.setFont(undefined, 'bold');
+                pdf.text(oct2024Avg, margin + boxWidth/2, yPos + 22, { align: 'center' });
+
+                // Box 2: Current Month
+                pdf.setFont(undefined, 'normal');
+                pdf.setFillColor(248, 249, 250);
+                pdf.rect(margin + boxWidth + 5, yPos, boxWidth, boxHeight, 'F');
+                pdf.setFontSize(9);
+                pdf.setTextColor(102, 126, 234);
+                pdf.text('Current Month Average', margin + boxWidth + 5 + boxWidth/2, yPos + 8, { align: 'center' });
+                pdf.setFontSize(20);
+                pdf.setTextColor(40, 167, 69);
+                pdf.setFont(undefined, 'bold');
+                pdf.text(currentAvg, margin + boxWidth + 5 + boxWidth/2, yPos + 22, { align: 'center' });
+
+                // Box 3: Improvement
+                pdf.setFont(undefined, 'normal');
+                pdf.setFillColor(248, 249, 250);
+                pdf.rect(margin + (boxWidth + 5) * 2, yPos, boxWidth, boxHeight, 'F');
+                pdf.setFontSize(9);
+                pdf.setTextColor(102, 126, 234);
+                pdf.text('Total Improvement', margin + (boxWidth + 5) * 2 + boxWidth/2, yPos + 8, { align: 'center' });
+                pdf.setFontSize(20);
+                pdf.setTextColor(40, 167, 69);
+                pdf.setFont(undefined, 'bold');
+                pdf.text(improvementDiff, margin + (boxWidth + 5) * 2 + boxWidth/2, yPos + 18, { align: 'center' });
+                pdf.setFontSize(10);
+                pdf.text(improvementPercent, margin + (boxWidth + 5) * 2 + boxWidth/2, yPos + 26, { align: 'center' });
+
+                yPos += boxHeight + 15;
+
+                // Market Rankings Table
+                pdf.setFont(undefined, 'bold');
+                pdf.setFontSize(14);
+                pdf.setTextColor(118, 75, 162);
+                pdf.text('Market Ranking (by Current Rating)', margin, yPos);
+                yPos += 8;
+
+                // Table header
+                pdf.setFillColor(102, 126, 234);
+                pdf.rect(margin, yPos, contentWidth, 8, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(9);
+                pdf.setFont(undefined, 'bold');
+                pdf.text('Rank', margin + 5, yPos + 5);
+                pdf.text('Market', margin + 20, yPos + 5);
+                pdf.text('Rating', margin + 100, yPos + 5);
+                pdf.text('Status', margin + 130, yPos + 5);
+                yPos += 8;
+
+                // Get market ranking data
+                const marketRows = document.getElementById('exec-market-ranking-table').querySelectorAll('tr');
+                pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(0, 0, 0);
+                marketRows.forEach((row, idx) => {
+                    if (idx < 7) { // Limit to prevent overflow
+                        const cells = row.querySelectorAll('td');
+                        if (cells.length > 0) {
+                            pdf.setFontSize(9);
+
+                            // Alternating row colors
+                            if (idx % 2 === 0) {
+                                pdf.setFillColor(248, 249, 250);
+                                pdf.rect(margin, yPos, contentWidth, 7, 'F');
+                            }
+
+                            pdf.text(cleanTextForPDF(cells[0].textContent), margin + 5, yPos + 5);
+                            pdf.text(cleanTextForPDF(cells[1].textContent), margin + 20, yPos + 5);
+                            pdf.text(cleanTextForPDF(cells[2].textContent), margin + 100, yPos + 5);
+                            pdf.text(cleanTextForPDF(cells[3].textContent), margin + 130, yPos + 5);
+                            yPos += 7;
+                        }
+                    }
+                });
+
+                yPos += 10;
+                checkNewPage(50);
+
+                // Market Improvement Table
+                pdf.setFont(undefined, 'bold');
+                pdf.setFontSize(14);
+                pdf.setTextColor(118, 75, 162);
+                pdf.text('Market Improvement Ranking', margin, yPos);
+                yPos += 8;
+
+                // Table header
+                pdf.setFillColor(102, 126, 234);
+                pdf.rect(margin, yPos, contentWidth, 8, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(9);
+                pdf.setFont(undefined, 'bold');
+                pdf.text('Rank', margin + 5, yPos + 5);
+                pdf.text('Market', margin + 20, yPos + 5);
+                pdf.text('Oct 2024', margin + 85, yPos + 5);
+                pdf.text('Current', margin + 115, yPos + 5);
+                pdf.text('Change', margin + 145, yPos + 5);
+                yPos += 8;
+
+                // Get improvement data
+                const improvementRows = document.getElementById('exec-market-improvement-table').querySelectorAll('tr');
+                pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(0, 0, 0);
+                improvementRows.forEach((row, idx) => {
+                    if (idx < 7) {
+                        const cells = row.querySelectorAll('td');
+                        if (cells.length > 0) {
+                            checkNewPage(10);
+                            pdf.setFontSize(9);
+
+                            if (idx % 2 === 0) {
+                                pdf.setFillColor(248, 249, 250);
+                                pdf.rect(margin, yPos, contentWidth, 7, 'F');
+                            }
+
+                            pdf.text(cleanTextForPDF(cells[0].textContent), margin + 5, yPos + 5);
+                            pdf.text(cleanTextForPDF(cells[1].textContent), margin + 20, yPos + 5);
+                            pdf.text(cleanTextForPDF(cells[2].textContent), margin + 85, yPos + 5);
+                            pdf.text(cleanTextForPDF(cells[3].textContent), margin + 115, yPos + 5);
+                            pdf.text(cleanTextForPDF(cells[4].textContent), margin + 145, yPos + 5);
+                            yPos += 7;
+                        }
+                    }
+                });
+
+                // Page 3 - Location Performance
+                pdf.addPage();
+                pageNum++;
+                addPageHeader(pageNum);
+                yPos = 25;
+
+                pdf.setFontSize(18);
+                pdf.setFont(undefined, 'bold');
+                pdf.setTextColor(102, 126, 234);
+                pdf.text('Location Performance Overview', margin, yPos);
+                yPos += 10;
+
+                // Top 10 Locations
+                pdf.setFont(undefined, 'bold');
+                pdf.setFontSize(14);
+                pdf.setTextColor(118, 75, 162);
+                pdf.text('Top 10 Performing Locations', margin, yPos);
+                yPos += 8;
+
+                pdf.setFillColor(102, 126, 234);
+                pdf.rect(margin, yPos, contentWidth, 8, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(8);
+                pdf.setFont(undefined, 'bold');
+                pdf.text('Rank', margin + 3, yPos + 5);
+                pdf.text('Location', margin + 15, yPos + 5);
+                pdf.text('City', margin + 80, yPos + 5);
+                pdf.text('Market', margin + 120, yPos + 5);
+                pdf.text('Rating', margin + 160, yPos + 5);
+                yPos += 8;
+
+                const topLocRows = document.getElementById('exec-top-locations-table').querySelectorAll('tr');
+                pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(0, 0, 0);
+                topLocRows.forEach((row, idx) => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        checkNewPage(10);
+                        pdf.setFontSize(8);
+
+                        if (idx % 2 === 0) {
+                            pdf.setFillColor(248, 249, 250);
+                            pdf.rect(margin, yPos, contentWidth, 7, 'F');
+                        }
+
+                        pdf.text(cleanTextForPDF(cells[0].textContent), margin + 3, yPos + 5);
+                        const locationText = cleanTextForPDF(cells[1].textContent).substring(0, 30);
+                        pdf.text(locationText, margin + 15, yPos + 5);
+                        pdf.text(cleanTextForPDF(cells[2].textContent), margin + 80, yPos + 5);
+                        pdf.text(cleanTextForPDF(cells[3].textContent), margin + 120, yPos + 5);
+                        pdf.text(cleanTextForPDF(cells[4].textContent), margin + 160, yPos + 5);
+                        yPos += 7;
+                    }
+                });
+
+                yPos += 10;
+                checkNewPage(50);
+
+                // Bottom 10 Locations
+                pdf.setFont(undefined, 'bold');
+                pdf.setFontSize(14);
+                pdf.setTextColor(118, 75, 162);
+                pdf.text('Bottom 10 Locations (Need Improvement)', margin, yPos);
+                yPos += 8;
+
+                pdf.setFillColor(102, 126, 234);
+                pdf.rect(margin, yPos, contentWidth, 8, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(8);
+                pdf.setFont(undefined, 'bold');
+                pdf.text('Rank', margin + 3, yPos + 5);
+                pdf.text('Location', margin + 15, yPos + 5);
+                pdf.text('City', margin + 80, yPos + 5);
+                pdf.text('Market', margin + 120, yPos + 5);
+                pdf.text('Rating', margin + 160, yPos + 5);
+                yPos += 8;
+
+                const bottomLocRows = document.getElementById('exec-bottom-locations-table').querySelectorAll('tr');
+                pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(0, 0, 0);
+                bottomLocRows.forEach((row, idx) => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        checkNewPage(10);
+                        pdf.setFontSize(8);
+
+                        if (idx % 2 === 0) {
+                            pdf.setFillColor(248, 249, 250);
+                            pdf.rect(margin, yPos, contentWidth, 7, 'F');
+                        }
+
+                        pdf.text(cleanTextForPDF(cells[0].textContent), margin + 3, yPos + 5);
+                        const locationText = cleanTextForPDF(cells[1].textContent).substring(0, 30);
+                        pdf.text(locationText, margin + 15, yPos + 5);
+                        pdf.text(cleanTextForPDF(cells[2].textContent), margin + 80, yPos + 5);
+                        pdf.text(cleanTextForPDF(cells[3].textContent), margin + 120, yPos + 5);
+                        pdf.text(cleanTextForPDF(cells[4].textContent), margin + 160, yPos + 5);
+                        yPos += 7;
+                    }
+                });
+
+                // No Strategic Insights page - removed as requested
+                addPageFooter(pageNum);
+
+                // Save PDF
+                const dateStr = new Date().toISOString().split('T')[0];
+                pdf.save(`Executive_Performance_Report_${dateStr}.pdf`);
+
+                button.innerHTML = originalText;
+                button.disabled = false;
+                alert('✅ Professional PDF report generated successfully!');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('❌ Error generating PDF. Please try again.');
+                const button = document.querySelector('.export-button-pdf');
+                button.innerHTML = '📄 Export as PDF';
+                button.disabled = false;
+            }
+        }
+
+        // Condensed 1-Page PDF Export Function
+        async function exportExecutiveReportOnePage() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const button = document.querySelector('.export-button-onepage');
+                const originalText = button.innerHTML;
+
+                button.innerHTML = '⏳ Generating 1-Page PDF...';
+                button.disabled = true;
+
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = 210;
+                const pageHeight = 297;
+                const margin = 12;
+                const contentWidth = pageWidth - (2 * margin);
+                let yPos = margin;
+
+                // Header
+                pdf.setFillColor(102, 126, 234);
+                pdf.rect(0, 0, pageWidth, 20, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(16);
+                pdf.setFont(undefined, 'bold');
+                pdf.text('Executive Performance Summary', pageWidth / 2, 10, { align: 'center' });
+                pdf.setFontSize(9);
+                pdf.setFont(undefined, 'normal');
+                const reportDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                pdf.text(`Generated: ${reportDate}`, pageWidth / 2, 16, { align: 'center' });
+
+                yPos = 28;
+
+                // Company Performance - 3 metrics in a row
+                pdf.setFontSize(11);
+                pdf.setFont(undefined, 'bold');
+                pdf.setTextColor(102, 126, 234);
+                pdf.text('Company Performance Overview', margin, yPos);
+                yPos += 6;
+
+                const oct2024Avg = document.getElementById('exec-oct-2024-avg').textContent;
+                const currentAvg = document.getElementById('exec-current-month-avg').textContent;
+                const improvementDiff = document.getElementById('exec-improvement-diff').textContent;
+                const improvementPercent = document.getElementById('exec-improvement-percent').textContent;
+
+                const boxWidth = (contentWidth - 8) / 3;
+                const boxHeight = 18;
+
+                // Box 1
+                pdf.setFillColor(248, 249, 250);
+                pdf.roundedRect(margin, yPos, boxWidth, boxHeight, 2, 2, 'F');
+                pdf.setFontSize(7);
+                pdf.setTextColor(102, 126, 234);
+                pdf.text('Oct 2024 Avg', margin + boxWidth/2, yPos + 5, { align: 'center' });
+                pdf.setFontSize(14);
+                pdf.setTextColor(0, 0, 0);
+                pdf.setFont(undefined, 'bold');
+                pdf.text(oct2024Avg, margin + boxWidth/2, yPos + 13, { align: 'center' });
+
+                // Box 2
+                pdf.setFillColor(248, 249, 250);
+                pdf.roundedRect(margin + boxWidth + 4, yPos, boxWidth, boxHeight, 2, 2, 'F');
+                pdf.setFontSize(7);
+                pdf.setTextColor(102, 126, 234);
+                pdf.text('Current Avg', margin + boxWidth + 4 + boxWidth/2, yPos + 5, { align: 'center' });
+                pdf.setFontSize(14);
+                pdf.setTextColor(40, 167, 69);
+                pdf.text(currentAvg, margin + boxWidth + 4 + boxWidth/2, yPos + 13, { align: 'center' });
+
+                // Box 3
+                pdf.setFillColor(248, 249, 250);
+                pdf.roundedRect(margin + (boxWidth + 4) * 2, yPos, boxWidth, boxHeight, 2, 2, 'F');
+                pdf.setFontSize(7);
+                pdf.setTextColor(102, 126, 234);
+                pdf.text('Improvement', margin + (boxWidth + 4) * 2 + boxWidth/2, yPos + 5, { align: 'center' });
+                pdf.setFontSize(14);
+                pdf.setTextColor(40, 167, 69);
+                pdf.text(`${improvementDiff} (${improvementPercent})`, margin + (boxWidth + 4) * 2 + boxWidth/2, yPos + 13, { align: 'center' });
+
+                yPos += boxHeight + 8;
+
+                // Two Column Layout: Markets and Locations
+                const colWidth = (contentWidth - 4) / 2;
+
+                // LEFT COLUMN - Market Rankings
+                let leftY = yPos;
+                pdf.setFontSize(10);
+                pdf.setFont(undefined, 'bold');
+                pdf.setTextColor(118, 75, 162);
+                pdf.text('Market Ranking (by Current Rating)', margin, leftY);
+                leftY += 5;
+
+                // Market table header
+                pdf.setFillColor(102, 126, 234);
+                pdf.rect(margin, leftY, colWidth, 6, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(6);
+                pdf.text('Rank', margin + 2, leftY + 4);
+                pdf.text('Market', margin + 12, leftY + 4);
+                pdf.text('Rating', margin + colWidth - 15, leftY + 4);
+                leftY += 6;
+
+                // Get ALL markets
+                const marketRows = document.getElementById('exec-market-ranking-table').querySelectorAll('tr');
+                pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(0, 0, 0);
+                marketRows.forEach((row, idx) => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        pdf.setFontSize(6);
+                        if (idx % 2 === 0) {
+                            pdf.setFillColor(248, 249, 250);
+                            pdf.rect(margin, leftY, colWidth, 4.5, 'F');
+                        }
+                        const cleanMarketName = cleanTextForPDF(cells[1].textContent);
+                        const marketName = cleanMarketName.length > 20 ? cleanMarketName.substring(0, 20) + '...' : cleanMarketName;
+                        pdf.text(cleanTextForPDF(cells[0].textContent), margin + 2, leftY + 3);
+                        pdf.text(marketName, margin + 12, leftY + 3);
+                        pdf.text(cleanTextForPDF(cells[2].textContent), margin + colWidth - 15, leftY + 3);
+                        leftY += 4.5;
+                    }
+                });
+
+                leftY += 3;
+
+                // Market Improvement Ranking
+                pdf.setFontSize(10);
+                pdf.setFont(undefined, 'bold');
+                pdf.setTextColor(118, 75, 162);
+                pdf.text('Market Improvement Ranking', margin, leftY);
+                leftY += 5;
+
+                pdf.setFillColor(102, 126, 234);
+                pdf.rect(margin, leftY, colWidth, 6, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(6);
+                pdf.text('Rank', margin + 2, leftY + 4);
+                pdf.text('Market', margin + 12, leftY + 4);
+                pdf.text('Oct 24', margin + colWidth - 30, leftY + 4);
+                pdf.text('Current', margin + colWidth - 20, leftY + 4);
+                pdf.text('Change', margin + colWidth - 10, leftY + 4);
+                leftY += 6;
+
+                const improvementRows = document.getElementById('exec-market-improvement-table').querySelectorAll('tr');
+                pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(0, 0, 0);
+                improvementRows.forEach((row, idx) => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        pdf.setFontSize(6);
+                        if (idx % 2 === 0) {
+                            pdf.setFillColor(248, 249, 250);
+                            pdf.rect(margin, leftY, colWidth, 4.5, 'F');
+                        }
+                        const cleanMarketName = cleanTextForPDF(cells[1].textContent);
+                        const marketName = cleanMarketName.length > 15 ? cleanMarketName.substring(0, 15) + '...' : cleanMarketName;
+                        pdf.text(cleanTextForPDF(cells[0].textContent), margin + 2, leftY + 3);
+                        pdf.text(marketName, margin + 12, leftY + 3);
+                        pdf.text(cleanTextForPDF(cells[2].textContent), margin + colWidth - 30, leftY + 3);
+                        pdf.text(cleanTextForPDF(cells[3].textContent), margin + colWidth - 20, leftY + 3);
+                        pdf.text(cleanTextForPDF(cells[4].textContent), margin + colWidth - 10, leftY + 3);
+                        leftY += 4.5;
+                    }
+                });
+
+                // RIGHT COLUMN - Location Performance
+                let rightY = yPos;
+                pdf.setFontSize(10);
+                pdf.setFont(undefined, 'bold');
+                pdf.setTextColor(118, 75, 162);
+                pdf.text('Top 10 Performing Locations', margin + colWidth + 4, rightY);
+                rightY += 5;
+
+                pdf.setFillColor(102, 126, 234);
+                pdf.rect(margin + colWidth + 4, rightY, colWidth, 6, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(6);
+                pdf.text('Rank', margin + colWidth + 6, rightY + 4);
+                pdf.text('Location', margin + colWidth + 16, rightY + 4);
+                pdf.text('Rating', margin + contentWidth - 10, rightY + 4);
+                rightY += 6;
+
+                const topLocRows = document.getElementById('exec-top-locations-table').querySelectorAll('tr');
+                pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(0, 0, 0);
+                let topLocCount = 0;
+                topLocRows.forEach((row, idx) => {
+                    if (topLocCount < 10) {
+                        const cells = row.querySelectorAll('td');
+                        if (cells.length > 0) {
+                            pdf.setFontSize(6);
+                            if (idx % 2 === 0) {
+                                pdf.setFillColor(248, 249, 250);
+                                pdf.rect(margin + colWidth + 4, rightY, colWidth, 4.5, 'F');
+                            }
+                            const cleanLocName = cleanTextForPDF(cells[2].textContent);
+                            const locName = cleanLocName.length > 18 ? cleanLocName.substring(0, 18) + '...' : cleanLocName;
+                            pdf.text(cleanTextForPDF(cells[0].textContent), margin + colWidth + 6, rightY + 3);
+                            pdf.text(locName, margin + colWidth + 16, rightY + 3);
+                            pdf.text(cleanTextForPDF(cells[4].textContent), margin + contentWidth - 10, rightY + 3);
+                            rightY += 4.5;
+                            topLocCount++;
+                        }
+                    }
+                });
+
+                rightY += 3;
+
+                // Bottom 10 Locations
+                pdf.setFontSize(10);
+                pdf.setFont(undefined, 'bold');
+                pdf.setTextColor(118, 75, 162);
+                pdf.text('Bottom 10 (Need Improvement)', margin + colWidth + 4, rightY);
+                rightY += 5;
+
+                pdf.setFillColor(102, 126, 234);
+                pdf.rect(margin + colWidth + 4, rightY, colWidth, 6, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(6);
+                pdf.text('Rank', margin + colWidth + 6, rightY + 4);
+                pdf.text('Location', margin + colWidth + 16, rightY + 4);
+                pdf.text('Rating', margin + contentWidth - 10, rightY + 4);
+                rightY += 6;
+
+                const bottomLocRows = document.getElementById('exec-bottom-locations-table').querySelectorAll('tr');
+                pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(0, 0, 0);
+                let bottomLocCount = 0;
+                bottomLocRows.forEach((row, idx) => {
+                    if (bottomLocCount < 10) {
+                        const cells = row.querySelectorAll('td');
+                        if (cells.length > 0) {
+                            pdf.setFontSize(6);
+                            if (idx % 2 === 0) {
+                                pdf.setFillColor(248, 249, 250);
+                                pdf.rect(margin + colWidth + 4, rightY, colWidth, 4.5, 'F');
+                            }
+                            const cleanLocName = cleanTextForPDF(cells[2].textContent);
+                            const locName = cleanLocName.length > 18 ? cleanLocName.substring(0, 18) + '...' : cleanLocName;
+                            pdf.text(cleanTextForPDF(cells[0].textContent), margin + colWidth + 6, rightY + 3);
+                            pdf.text(locName, margin + colWidth + 16, rightY + 3);
+                            pdf.text(cleanTextForPDF(cells[4].textContent), margin + contentWidth - 10, rightY + 3);
+                            rightY += 4.5;
+                            bottomLocCount++;
+                        }
+                    }
+                });
+
+                // No Strategic Insights Section - removed as requested
+                yPos = Math.max(leftY, rightY) + 5;
+
+                // Footer
+                pdf.setFontSize(7);
+                pdf.setTextColor(128, 128, 128);
+                pdf.text('Confidential - Google Reviews Analytics Platform', pageWidth / 2, pageHeight - 8, { align: 'center' });
+                pdf.text(`Created by Moiz Uddin`, margin, pageHeight - 8);
+                pdf.text(reportDate, pageWidth - margin, pageHeight - 8, { align: 'right' });
+
+                // Save PDF
+                const dateStr = new Date().toISOString().split('T')[0];
+                pdf.save(`Executive_Summary_1Page_${dateStr}.pdf`);
+
+                button.innerHTML = originalText;
+                button.disabled = false;
+                alert('✅ 1-Page Executive Summary generated successfully!');
+            } catch (error) {
+                console.error('Error generating 1-page PDF:', error);
+                alert('❌ Error generating PDF. Please try again.');
+                const button = document.querySelector('.export-button-onepage');
+                button.innerHTML = '📄 Export 1-Page PDF';
+                button.disabled = false;
+            }
+        }
+
+        // Image Export Function for Email
+        async function exportExecutiveReportAsImage() {
+            try {
+                const button = document.querySelector('.export-button-image');
+                const originalText = button.innerHTML;
+
+                button.innerHTML = '⏳ Generating Image...';
+                button.disabled = true;
+
+                const reportElement = document.getElementById('executive-report');
+
+                // Hide AI insights section during export
+                const insightsSection = reportElement.querySelector('.ai-insights');
+                const insightsSectionParent = insightsSection ? insightsSection.closest('.report-section') : null;
+                const originalDisplay = insightsSectionParent ? insightsSectionParent.style.display : null;
+
+                if (insightsSectionParent) {
+                    insightsSectionParent.style.display = 'none';
+                }
+
+                // Capture with high quality
+                const canvas = await html2canvas(reportElement, {
+                    scale: 3, // Higher scale for better quality
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    width: reportElement.scrollWidth,
+                    height: reportElement.scrollHeight,
+                    windowWidth: reportElement.scrollWidth,
+                    windowHeight: reportElement.scrollHeight
+                });
+
+                // Convert to blob
+                canvas.toBlob(async (blob) => {
+                    // Restore AI insights section visibility
+                    if (insightsSectionParent) {
+                        insightsSectionParent.style.display = originalDisplay || '';
+                    }
+
+                    try {
+                        // Try to copy to clipboard (modern browsers)
+                        if (navigator.clipboard && window.ClipboardItem) {
+                            const item = new ClipboardItem({ 'image/png': blob });
+                            await navigator.clipboard.write([item]);
+
+                            // Also offer download
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            const dateStr = new Date().toISOString().split('T')[0];
+                            link.download = `Executive_Report_${dateStr}.png`;
+                            link.href = url;
+                            link.click();
+                            URL.revokeObjectURL(url);
+
+                            button.innerHTML = originalText;
+                            button.disabled = false;
+                            alert('✅ Image copied to clipboard and downloaded!\n\nYou can now paste it directly into your email (Ctrl+V or Cmd+V).');
+                        } else {
+                            // Fallback: just download
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            const dateStr = new Date().toISOString().split('T')[0];
+                            link.download = `Executive_Report_${dateStr}.png`;
+                            link.href = url;
+                            link.click();
+                            URL.revokeObjectURL(url);
+
+                            button.innerHTML = originalText;
+                            button.disabled = false;
+                            alert('✅ Image downloaded!\n\nOpen the image and copy it to paste into your email.');
+                        }
+                    } catch (clipboardError) {
+                        console.error('Clipboard error:', clipboardError);
+
+                        // Fallback: just download
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        const dateStr = new Date().toISOString().split('T')[0];
+                        link.download = `Executive_Report_${dateStr}.png`;
+                        link.href = url;
+                        link.click();
+                        URL.revokeObjectURL(url);
+
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                        alert('✅ Image downloaded!\n\nOpen the image and copy it to paste into your email.');
+                    }
+                }, 'image/png', 1.0);
+
+            } catch (error) {
+                console.error('Error generating image:', error);
+
+                // Restore AI insights section visibility in case of error
+                const reportElement = document.getElementById('executive-report');
+                const insightsSection = reportElement.querySelector('.ai-insights');
+                const insightsSectionParent = insightsSection ? insightsSection.closest('.report-section') : null;
+                if (insightsSectionParent) {
+                    insightsSectionParent.style.display = '';
+                }
+
+                alert('❌ Error generating image. Please try again.');
+                const button = document.querySelector('.export-button-image');
+                button.innerHTML = '🖼️ Export as Image';
+                button.disabled = false;
+            }
+        }
+
+        // Render companywide chart
+        function renderCompanywideChart(labels, data) {
+            const ctx = document.getElementById('companywideChart');
+            if (!ctx) {
+                console.error('Companywide chart canvas not found');
+                return;
+            }
+
+            new Chart(ctx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Companywide Average Rating',
+                        data: data,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: '#667eea',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Companywide Google Reviews - Store Average Ratings',
+                            font: { size: 18, weight: 'bold' },
+                            padding: 20
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            min: 0.0,
+                            max: 5.0,
+                            ticks: { stepSize: 0.5 },
+                            title: { display: true, text: 'Rating' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Month' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render companywide statistics
+        function renderCompanywideStats(data, monthLabels) {
+            const validRatings = data.filter(r => r !== null);
+            if (validRatings.length === 0) return;
+
+            const currentRating = data[data.length - 1];
+            const startRating = data[0];
+            const improvement = currentRating - startRating;
+            const lowestRating = Math.min(...validRatings);
+            const lowestIndex = data.indexOf(lowestRating);
+
+            // Find year-over-year change (12 months ago, if exists)
+            let yoyChange = 0;
+            if (data.length >= 13) {
+                const currentMonth = data[data.length - 1];
+                const yearAgo = data[data.length - 13];
+                if (currentMonth !== null && yearAgo !== null) {
+                    yoyChange = currentMonth - yearAgo;
+                }
+            }
+
+            const trend = currentRating > startRating ? '↗' : (currentRating < startRating ? '↘' : '→');
+            const trendText = currentRating > startRating ? 'Steady Improvement' : (currentRating < startRating ? 'Declining' : 'Stable');
+
+            const statsContainer = document.getElementById('companywideStats');
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <h4>Current Rating</h4>
+                    <div class="stat-value ${getRatingClassLocal(currentRating)}">${currentRating.toFixed(1)}</div>
+                    <div class="stat-label">${monthLabels[monthLabels.length - 1].label}</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Starting Rating</h4>
+                    <div class="stat-value ${getRatingClassLocal(startRating)}">${startRating.toFixed(1)}</div>
+                    <div class="stat-label">${monthLabels[0].label}</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Total Improvement</h4>
+                    <div class="stat-value rating-excellent">${improvement >= 0 ? '+' : ''}${improvement.toFixed(1)}</div>
+                    <div class="stat-label">Since ${monthLabels[0].label}</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Lowest Point</h4>
+                    <div class="stat-value ${getRatingClassLocal(lowestRating)}">${lowestRating.toFixed(1)}</div>
+                    <div class="stat-label">${monthLabels[lowestIndex].label}</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Month-over-Month</h4>
+                    <div class="stat-value rating-excellent">${yoyChange >= 0 ? '+' : ''}${yoyChange.toFixed(1)}</div>
+                    <div class="stat-label">vs. Previous Period</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Recent Trend</h4>
+                    <div class="stat-value rating-excellent">${trend}</div>
+                    <div class="stat-label">${trendText}</div>
+                </div>
+            `;
+        }
+
+        // Initialize companywide date selectors
+        function initializeCompanywideDateSelectors() {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+
+            const startMonth = document.getElementById('companywide-startMonth');
+            const endMonth = document.getElementById('companywide-endMonth');
+            const startYear = document.getElementById('companywide-startYear');
+            const endYear = document.getElementById('companywide-endYear');
+
+            if (!startMonth || !endMonth || !startYear || !endYear) {
+                console.error('Date selector elements not found');
+                return;
+            }
+
+            monthNames.forEach((month, i) => {
+                startMonth.add(new Option(month, i));
+                endMonth.add(new Option(month, i));
+            });
+
+            [2024, 2025].forEach(year => {
+                startYear.add(new Option(year, year));
+                endYear.add(new Option(year, year));
+            });
+
+            const now = new Date();
+            startMonth.value = 9; // October
+            startYear.value = 2024;
+            endMonth.value = now.getMonth();
+            endYear.value = now.getFullYear();
+        }
+
+        // Update companywide rankings
+        function updateCompanywideRankings() {
+            console.log('Updating companywide rankings...');
+
+            const startMonth = parseInt(document.getElementById('companywide-startMonth').value);
+            const startYear = parseInt(document.getElementById('companywide-startYear').value);
+            const endMonth = parseInt(document.getElementById('companywide-endMonth').value);
+            const endYear = parseInt(document.getElementById('companywide-endYear').value);
+
+            const startIdx = (startYear - 2024) * 12 + startMonth - 9;
+            const endIdx = (endYear - 2024) * 12 + endMonth - 9;
+
+            if (startIdx < 0 || endIdx < 0 || startIdx > endIdx) {
+                console.error('Invalid date range');
+                return;
+            }
+
+            // Collect all stores with their data
+            const allStores = [];
+            const regionAverages = [];
+
+            for (const [regionName, graphData] of Object.entries(regionalGraphData)) {
+                if (!graphData.locations) continue;
+
+                const regionRatings = [];
+
+                graphData.locations.forEach(loc => {
+                    const avgRating = calculateAverageRating(loc.data, startIdx, endIdx);
+                    const startRating = parseFloat(loc.data[startIdx]) || null;
+                    const endRating = parseFloat(loc.data[endIdx]) || null;
+
+                    let change = 0;
+                    if (startRating !== null && endRating !== null) {
+                        change = endRating - startRating;
+                    }
+
+                    if (avgRating > 0) {
+                        allStores.push({
+                            name: `${loc.city} (${regionName})`,
+                            avgRating,
+                            change,
+                            startRating,
+                            endRating
+                        });
+
+                        regionRatings.push(avgRating);
+                    }
+                });
+
+                // Calculate region average
+                if (regionRatings.length > 0) {
+                    const regionAvg = regionRatings.reduce((sum, r) => sum + r, 0) / regionRatings.length;
+
+                    // Get regional average data for change calculation
+                    const regionStartRating = graphData.average.data[startIdx];
+                    const regionEndRating = graphData.average.data[endIdx];
+                    let regionChange = 0;
+                    if (regionStartRating !== null && regionEndRating !== null) {
+                        regionChange = regionEndRating - regionStartRating;
+                    }
+
+                    regionAverages.push({
+                        name: regionName,
+                        avgRating: regionAvg,
+                        change: regionChange
+                    });
+                }
+            }
+
+            // Sort and get rankings
+            const best5Stores = [...allStores].sort((a, b) => b.avgRating - a.avgRating).slice(0, 5);
+            const worst5Stores = [...allStores].sort((a, b) => a.avgRating - b.avgRating).slice(0, 5);
+            const improvedStores = [...allStores].filter(s => s.change > 0).sort((a, b) => b.change - a.change).slice(0, 5);
+            const declinedStores = [...allStores].filter(s => s.change < 0).sort((a, b) => a.change - b.change).slice(0, 5);
+
+            const bestRegions = [...regionAverages].sort((a, b) => b.avgRating - a.avgRating);
+            const worstRegions = [...regionAverages].sort((a, b) => a.avgRating - b.avgRating);
+            const improvedRegions = [...regionAverages].filter(r => r.change > 0).sort((a, b) => b.change - a.change);
+            const declinedRegions = [...regionAverages].filter(r => r.change < 0).sort((a, b) => a.change - b.change);
+
+            // Render store rankings
+            renderRankingList('companywide-best5-stores', best5Stores, 'avgRating');
+            renderRankingList('companywide-worst5-stores', worst5Stores, 'avgRating');
+            renderRankingList('companywide-improved-stores', improvedStores, 'change');
+            renderRankingList('companywide-declined-stores', declinedStores, 'change');
+
+            // Render region rankings
+            renderRankingList('companywide-best-regions', bestRegions, 'avgRating');
+            renderRankingList('companywide-worst-regions', worstRegions, 'avgRating');
+            renderRankingList('companywide-improved-regions', improvedRegions, 'change');
+            renderRankingList('companywide-declined-regions', declinedRegions, 'change');
+        }
+
+        // Initialize dashboard on page load
+        // NOTE: populateDashboard() is now called by dynamic.js (with caching)
+        // The old loadAllRegionsAndGraphs() call has been removed
+        // window.addEventListener('load', () => {
+        //     loadAllRegionsAndGraphs();
+        // });
+
+        window.addEventListener('resize', syncRowHeights);
+
+        // Display current date
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    </script>
+</body>
+</html>

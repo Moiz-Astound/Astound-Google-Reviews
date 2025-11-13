@@ -1,0 +1,8 @@
+node_modules
+.git
+*.md
+cloud-function
+serverless-function
+netlify
+*.rtf
+.DS_Store

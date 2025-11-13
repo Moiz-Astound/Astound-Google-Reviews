@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node modules
+node_modules/
+
+# Netlify
+.netlify/
+
+# Build directories
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+
+# Backup folders
+cloud-function/
+serverless-function/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

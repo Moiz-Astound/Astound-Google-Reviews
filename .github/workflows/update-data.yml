@@ -1,0 +1,55 @@
+name: Update Ratings Data Monthly
+
+on:
+  # Run on the 1st of every month at 2:00 AM UTC
+  schedule:
+    - cron: '0 2 1 * *'
+
+  # Allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Run data fetcher script
+        run: node data-fetcher.js
+
+      - name: Check if data was updated
+        id: check_changes
+        run: |
+          if [ -f ratings-data.json ]; then
+            echo "Data file exists"
+            git add ratings-data.json
+            if git diff --staged --quiet; then
+              echo "changed=false" >> $GITHUB_OUTPUT
+            else
+              echo "changed=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "Error: ratings-data.json was not created"
+            exit 1
+          fi
+
+      - name: Commit and push updated data
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "🤖 Auto-update ratings data - $(date +'%B %Y')"
+          git push
+
+      - name: No changes detected
+        if: steps.check_changes.outputs.changed == 'false'
+        run: echo "No changes in ratings data - skipping commit"

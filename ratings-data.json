@@ -1,0 +1,1175 @@
+{
+  "lastUpdated": "2025-11-13T15:03:20.437Z",
+  "monthLabels": [
+    {
+      "label": "10/1/24",
+      "apiDate": "2024-10-01"
+    },
+    {
+      "label": "11/1/24",
+      "apiDate": "2024-11-01"
+    },
+    {
+      "label": "12/1/24",
+      "apiDate": "2024-12-01"
+    },
+    {
+      "label": "1/1/25",
+      "apiDate": "2025-01-01"
+    },
+    {
+      "label": "2/1/25",
+      "apiDate": "2025-02-01"
+    },
+    {
+      "label": "3/1/25",
+      "apiDate": "2025-03-01"
+    },
+    {
+      "label": "4/1/25",
+      "apiDate": "2025-04-01"
+    },
+    {
+      "label": "5/1/25",
+      "apiDate": "2025-05-01"
+    },
+    {
+      "label": "6/1/25",
+      "apiDate": "2025-06-01"
+    },
+    {
+      "label": "7/1/25",
+      "apiDate": "2025-07-01"
+    },
+    {
+      "label": "8/1/25",
+      "apiDate": "2025-08-01"
+    },
+    {
+      "label": "9/1/25",
+      "apiDate": "2025-09-01"
+    },
+    {
+      "label": "10/1/25",
+      "apiDate": "2025-10-01"
+    },
+    {
+      "label": "11/1/25",
+      "apiDate": "2025-11-01"
+    }
+  ],
+  "regions": {
+    "Texas": {
+      "manager": "Mike Carrosquilla",
+      "competitors": {
+        "xfinity": 3.1,
+        "spectrum": 3.1,
+        "verizon": 3.8,
+        "att": 4.2
+      },
+      "locations": [
+        {
+          "address": "2401 E Interstate 20",
+          "city": "Odessa",
+          "state": "TX",
+          "zip": "79766",
+          "entityId": "3339612",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "401 Carlson Circle",
+          "city": "San Marcos",
+          "state": "TX",
+          "zip": "78666",
+          "entityId": "3339610",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "6480 N New Braunfels Ave",
+          "city": "San Antonio",
+          "state": "TX",
+          "zip": "78209",
+          "entityId": "3339614",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "7595 W U.S. Hwy 190, Suite B",
+          "city": "Belton",
+          "state": "TX",
+          "zip": "76513",
+          "entityId": "3339616",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "6441 Saratoga Boulevard",
+          "city": "Corpus Christi",
+          "state": "TX",
+          "zip": "78414",
+          "entityId": "3339613",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "1100 E Howard Lane, Building 6",
+          "city": "Austin",
+          "state": "TX",
+          "zip": "78753",
+          "entityId": "3339611",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "500 Fisk Ave, Brownwood",
+          "city": "Brownwood",
+          "state": "TX",
+          "zip": "76801",
+          "entityId": "3339619",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "500 Tittle Rd. Ste 400",
+          "city": "Lewisville (Dallas)",
+          "state": "TX",
+          "zip": "75056",
+          "entityId": "3339615",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "Serviceable Area (Review is tied to a serviceable area.",
+          "city": "Missouri City (Houston)",
+          "state": "TX",
+          "zip": "NA",
+          "entityId": "enTouch 1",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "Serviceable Area (Review is tied to a serviceable area.",
+          "city": "Midland",
+          "state": "TX",
+          "zip": "NA",
+          "entityId": "3339617",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "7200 Imperial Drive",
+          "city": "Waco",
+          "state": "TX",
+          "zip": "76712",
+          "entityId": "3339618",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    "Illiana": {
+      "manager": "Joe Bell",
+      "competitors": {
+        "xfinity": 3.5,
+        "spectrum": 2.9,
+        "verizon": 3.4,
+        "att": 4.2
+      },
+      "locations": [
+        {
+          "address": "Serviceable Area (Review is tied to a serviceable area.",
+          "city": "Chicago",
+          "state": "IL",
+          "zip": "60618",
+          "entityId": "2856723",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "Serviceable Area (Review is tied to a serviceable area.",
+          "city": "Evansville",
+          "state": "IN",
+          "zip": "47715",
+          "entityId": "2856733",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    "West Coast": {
+      "manager": "Jared Sonne",
+      "competitors": {
+        "xfinity": 3.1,
+        "spectrum": 2.9,
+        "verizon": 4.1,
+        "att": 4.3
+      },
+      "locations": [
+        {
+          "address": "13428 Lincoln Way",
+          "city": "Auburn",
+          "state": "CA",
+          "zip": "95603",
+          "entityId": "Wave 17",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "785 Oak Grove Rd, #M",
+          "city": "Concord",
+          "state": "CA",
+          "zip": "94518",
+          "entityId": "Wave 23",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "2205 Sunset Blvd, Suite 501",
+          "city": "Rocklin",
+          "state": "CA",
+          "zip": "95165",
+          "entityId": "Wave 26",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "2841 S El Camino Real",
+          "city": "San Mateo",
+          "state": "CA",
+          "zip": "94403",
+          "entityId": "Wave 24",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "1031 Triangle Ct",
+          "city": "West Sacramento",
+          "state": "CA",
+          "zip": "95605",
+          "entityId": "Wave 20",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "1861 E Gibson Road, Suite C",
+          "city": "Woodland",
+          "state": "CA",
+          "zip": "95776",
+          "entityId": "Wave 21",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "711 Tank Farm Rd Suite 210 SMB ONLY",
+          "city": "San Luis Obispo",
+          "state": "CA",
+          "zip": "93401",
+          "entityId": "8053589461979049774",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "646 US-101",
+          "city": "Depoe Bay",
+          "state": "OR",
+          "zip": "97341",
+          "entityId": "Wave 15",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "635 Ray J Glatt Circle B",
+          "city": "Woodburn",
+          "state": "OR",
+          "zip": "97071",
+          "entityId": "Wave 13",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "281 N 3rd Ave",
+          "city": "Stayton",
+          "state": "OR",
+          "zip": "97383",
+          "entityId": "Wave 16",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "36653 US-26",
+          "city": "Sandy",
+          "state": "OR",
+          "zip": "97055",
+          "entityId": "Wave 11",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "385 NE Alsea HWY #6",
+          "city": "Waldport",
+          "state": "OR",
+          "zip": "97394",
+          "entityId": "Wave 29",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "353 NW 2nd Ave",
+          "city": "Canby",
+          "state": "OR",
+          "zip": "97013",
+          "entityId": "Wave 12",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "430 S Bridge St",
+          "city": "Sheridan",
+          "state": "OR",
+          "zip": "97378",
+          "entityId": "Wave 14",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "900 Lenora Street, Suite 140",
+          "city": "Seattle",
+          "state": "WA",
+          "zip": "98121",
+          "entityId": "Wave 28",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "511 Morris St, Suite 2",
+          "city": "La Conner",
+          "state": "WA",
+          "zip": "98257",
+          "entityId": "Wave 1",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "112 W 8th St",
+          "city": "Port Angeles",
+          "state": "WA",
+          "zip": "98362",
+          "entityId": "Wave 5",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "4519 SE Mile Hill Dr",
+          "city": "Port Orchard",
+          "state": "WA",
+          "zip": "98366",
+          "entityId": "Wave 8",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "1111 11th Ave",
+          "city": "Longview",
+          "state": "WA",
+          "zip": "98632",
+          "entityId": "",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "1400 W Washington St #108",
+          "city": "Sequim",
+          "state": "WA",
+          "zip": "98382",
+          "entityId": "Wave 4",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "9300 271st St NW Suite B1",
+          "city": "Stanwood",
+          "state": "WA",
+          "zip": "98292",
+          "entityId": "Wave 2",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    "Massachusetts": {
+      "manager": "Sanford Ames",
+      "competitors": {
+        "xfinity": 3.4,
+        "spectrum": 3,
+        "verizon": 4.3,
+        "att": 4.5
+      },
+      "locations": [
+        {
+          "address": "1224 Hyde Park Ave",
+          "city": "Hyde Park",
+          "state": "MA",
+          "zip": "02136",
+          "entityId": "2856722",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "518 Union Ave",
+          "city": "Framingham",
+          "state": "MA",
+          "zip": "01702",
+          "entityId": "2856721",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "956 Massachusetts Ave",
+          "city": "Arlington",
+          "state": "MA",
+          "zip": "02476",
+          "entityId": "2856720",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    "DC / Maryland": {
+      "manager": "Sanford Ames",
+      "competitors": {
+        "xfinity": 3.2,
+        "spectrum": "-",
+        "verizon": 3.7,
+        "att": 4.3
+      },
+      "locations": [
+        {
+          "address": "406 Headquarters Dr #201",
+          "city": "Millersville",
+          "state": "MD",
+          "zip": "21108",
+          "entityId": "2856734",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "5756 Georgia Ave NW",
+          "city": "Washington DC",
+          "state": "DC",
+          "zip": "20011",
+          "entityId": "2856724",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    "Pennsylvania / New Jersey": {
+      "manager": "Sanford Ames",
+      "competitors": {
+        "xfinity": 3.5,
+        "spectrum": "-",
+        "verizon": 4.2,
+        "att": 4.6
+      },
+      "locations": [
+        {
+          "address": "650 College Road East",
+          "city": "Princeton (Philly)",
+          "state": "NJ",
+          "zip": "08540",
+          "entityId": "2856728",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "2124 Avenue C",
+          "city": "Bethlehem",
+          "state": "PA",
+          "zip": "18017",
+          "entityId": "2856725",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "1864 N Twp Blvd",
+          "city": "Pittston (Luzerne)",
+          "state": "PA",
+          "zip": "18640",
+          "entityId": "2856730",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    "New York": {
+      "manager": "Sanford Ames",
+      "competitors": {
+        "xfinity": 3.6,
+        "spectrum": 3.2,
+        "verizon": 3.8,
+        "att": 3.2
+      },
+      "locations": [
+        {
+          "address": "33-16 Woodside Ave",
+          "city": "Long Island City (Queens)",
+          "state": "NY",
+          "zip": "11101",
+          "entityId": "2856726",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "2215 43rd Ave",
+          "city": "Long Island City (Queens)",
+          "state": "NY",
+          "zip": "11101",
+          "entityId": "2856727",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "address": "1133 6th Ave SMB ONLY",
+          "city": "New York (Manhattan)",
+          "state": "NY",
+          "zip": "10036",
+          "entityId": "",
+          "ratings": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  }
+}

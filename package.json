@@ -1,0 +1,17 @@
+{
+  "name": "yext-proxy-netlify",
+  "version": "2.0.0",
+  "description": "Google Reviews Analytics Platform with instant-loading cached data",
+  "main": "data-fetcher.js",
+  "scripts": {
+    "fetch-data": "node data-fetcher.js",
+    "update": "node data-fetcher.js && git add ratings-data.json && git commit -m '🤖 Data update' && git push"
+  },
+  "author": "Moiz Uddin",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
