@@ -517,7 +517,21 @@ function updateLocationRow(regionName, locIndex, ratings, monthLabels) {
         const cell = row.children[index];
         const formattedRating = formatRating(rating);
         cell.textContent = formattedRating;
-        cell.className = `rating ${getRatingClass(formattedRating)}`;
+
+        // Apply color coding - set base class first, then add color class
+        cell.className = 'rating';
+        if (formattedRating !== '-') {
+            const ratingValue = parseFloat(formattedRating);
+            if (ratingValue >= 4.0) {
+                cell.classList.add('rating-excellent');
+            } else if (ratingValue >= 3.0) {
+                cell.classList.add('rating-good');
+            } else if (ratingValue >= 2.5) {
+                cell.classList.add('rating-fair');
+            } else {
+                cell.classList.add('rating-poor');
+            }
+        }
     });
 }
 
@@ -541,8 +555,21 @@ function updateAverageRow(regionName, numLocations, monthLabels) {
         const avg = calculateAverage(ratings);
         const cell = avgRow.children[monthIndex];
         cell.textContent = avg;
-        // Apply color coding to average row
-        cell.className = `rating ${getRatingClass(avg)}`;
+
+        // Apply color coding to average row - set base class first, then add color class
+        cell.className = 'rating';
+        if (avg !== '-') {
+            const ratingValue = parseFloat(avg);
+            if (ratingValue >= 4.0) {
+                cell.classList.add('rating-excellent');
+            } else if (ratingValue >= 3.0) {
+                cell.classList.add('rating-good');
+            } else if (ratingValue >= 2.5) {
+                cell.classList.add('rating-fair');
+            } else {
+                cell.classList.add('rating-poor');
+            }
+        }
     }
 }
 
