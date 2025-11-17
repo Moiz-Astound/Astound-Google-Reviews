@@ -12,7 +12,7 @@
 |--------|--------|-------|-------------|
 | Load Time | 10+ minutes | < 2 seconds | **300x faster** |
 | API Calls | 500+ per load | 0 per load | **100% reduction** |
-| User Experience | Unusable | Excellent | ✅ |
+| User Experience | Unusable | Excellent | |
 
 ---
 
