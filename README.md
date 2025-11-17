@@ -1,6 +1,6 @@
 # Astound Google Reviews Analytics Platform v2.0
 
-**Created by Moiz Uddin
+**Created by Moiz Uddin**
 
 **Instant-Loading Dashboard with Monthly Auto-Updates**
 
