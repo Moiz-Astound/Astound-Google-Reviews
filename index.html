@@ -1950,10 +1950,17 @@
 
                 // Load logo as base64
                 const logoImg = new Image();
-                logoImg.src = 'Astound_RGB_KO Green.png';
-                await new Promise((resolve) => {
-                    logoImg.onload = resolve;
-                    logoImg.onerror = resolve; // Continue even if logo fails to load
+                logoImg.crossOrigin = 'anonymous';
+                logoImg.src = 'Astound_RGB_KO%20Green.png';
+                await new Promise((resolve, reject) => {
+                    logoImg.onload = () => {
+                        console.log('Logo loaded successfully for PDF');
+                        resolve();
+                    };
+                    logoImg.onerror = (e) => {
+                        console.error('Logo failed to load:', e);
+                        resolve(); // Continue even if logo fails to load
+                    };
                 });
 
                 // Helper function to add page header
@@ -2338,10 +2345,17 @@
 
                 // Load logo as base64
                 const logoImg = new Image();
-                logoImg.src = 'Astound_RGB_KO Green.png';
-                await new Promise((resolve) => {
-                    logoImg.onload = resolve;
-                    logoImg.onerror = resolve; // Continue even if logo fails to load
+                logoImg.crossOrigin = 'anonymous';
+                logoImg.src = 'Astound_RGB_KO%20Green.png';
+                await new Promise((resolve, reject) => {
+                    logoImg.onload = () => {
+                        console.log('Logo loaded successfully for PDF');
+                        resolve();
+                    };
+                    logoImg.onerror = (e) => {
+                        console.error('Logo failed to load:', e);
+                        resolve(); // Continue even if logo fails to load
+                    };
                 });
 
                 // Header
@@ -2594,7 +2608,6 @@
                 pdf.setFontSize(7);
                 pdf.setTextColor(128, 128, 128);
                 pdf.text('Confidential - Google Reviews Analytics Platform', pageWidth / 2, pageHeight - 8, { align: 'center' });
-                // pdf.text(`Created by Moiz Uddin`, margin, pageHeight - 8);
                 pdf.text(reportDate, pageWidth - margin, pageHeight - 8, { align: 'right' });
 
                 // Save PDF
