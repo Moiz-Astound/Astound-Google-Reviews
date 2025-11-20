@@ -1948,11 +1948,10 @@
                 const contentWidth = pageWidth - (2 * margin);
                 let yPos = margin;
 
-                // Load logo as base64
+                // Load logo
                 const logoImg = new Image();
-                logoImg.crossOrigin = 'anonymous';
-                logoImg.src = 'Astound_RGB_KO%20Green.png';
-                await new Promise((resolve, reject) => {
+                logoImg.src = './Astound_RGB_KO Green.png';
+                await new Promise((resolve) => {
                     logoImg.onload = () => {
                         console.log('Logo loaded successfully for PDF');
                         resolve();
@@ -1961,6 +1960,7 @@
                         console.error('Logo failed to load:', e);
                         resolve(); // Continue even if logo fails to load
                     };
+                    setTimeout(resolve, 2000); // Timeout after 2 seconds
                 });
 
                 // Helper function to add page header
@@ -2343,11 +2343,10 @@
                 const contentWidth = pageWidth - (2 * margin);
                 let yPos = margin;
 
-                // Load logo as base64
+                // Load logo
                 const logoImg = new Image();
-                logoImg.crossOrigin = 'anonymous';
-                logoImg.src = 'Astound_RGB_KO%20Green.png';
-                await new Promise((resolve, reject) => {
+                logoImg.src = './Astound_RGB_KO Green.png';
+                await new Promise((resolve) => {
                     logoImg.onload = () => {
                         console.log('Logo loaded successfully for PDF');
                         resolve();
@@ -2356,6 +2355,7 @@
                         console.error('Logo failed to load:', e);
                         resolve(); // Continue even if logo fails to load
                     };
+                    setTimeout(resolve, 2000); // Timeout after 2 seconds
                 });
 
                 // Header
