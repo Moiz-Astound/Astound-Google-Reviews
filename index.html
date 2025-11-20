@@ -824,6 +824,7 @@
 
     <div class="container">
         <div class="header">
+            <img src="Astound_RGB_KO Green.png" alt="Astound Logo" style="height: 60px; margin-bottom: 15px;">
             <h1>Astound Google Reviews Platform</h1>
             <p style="font-size: 0.9em; margin-bottom: 5px; opacity: 0.85;"></p>
             <p>Store Performance Analytics • <span id="date-range">Loading...</span></p>
@@ -1947,13 +1948,35 @@
                 const contentWidth = pageWidth - (2 * margin);
                 let yPos = margin;
 
+                // Load logo as base64
+                const logoImg = new Image();
+                logoImg.src = 'Astound_RGB_KO Green.png';
+                await new Promise((resolve) => {
+                    logoImg.onload = resolve;
+                    logoImg.onerror = resolve; // Continue even if logo fails to load
+                });
+
                 // Helper function to add page header
                 const addPageHeader = (pageNum) => {
                     pdf.setFillColor(102, 126, 234);
                     pdf.rect(0, 0, pageWidth, 15, 'F');
+
+                    // Add logo to header (left side)
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = logoImg.width;
+                        canvas.height = logoImg.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(logoImg, 0, 0);
+                        const logoDataUrl = canvas.toDataURL('image/png');
+                        pdf.addImage(logoDataUrl, 'PNG', margin, 2, 15, 11);
+                    } catch (e) {
+                        console.log('Logo not added to header:', e);
+                    }
+
                     pdf.setTextColor(255, 255, 255);
                     pdf.setFontSize(10);
-                    pdf.text('Google Reviews Analytics Platform - Executive Report', margin, 10);
+                    pdf.text('Google Reviews Analytics Platform - Executive Report', margin + 18, 10);
                     pdf.setTextColor(0, 0, 0);
                 };
 
@@ -1984,7 +2007,22 @@
 
                 // Title Page
                 addPageHeader(pageNum);
-                yPos = 60;
+                yPos = 50;
+
+                // Add large logo on title page
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = logoImg.width;
+                    canvas.height = logoImg.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(logoImg, 0, 0);
+                    const logoDataUrl = canvas.toDataURL('image/png');
+                    pdf.addImage(logoDataUrl, 'PNG', pageWidth / 2 - 20, yPos, 40, 30);
+                } catch (e) {
+                    console.log('Logo not added to title page:', e);
+                }
+
+                yPos += 40;
                 pdf.setFillColor(102, 126, 234);
                 pdf.rect(margin, yPos, contentWidth, 50, 'F');
                 pdf.setTextColor(255, 255, 255);
@@ -1999,7 +2037,7 @@
                 yPos += 70;
                 pdf.setTextColor(0, 0, 0);
                 pdf.setFontSize(12);
-                pdf.text('Created by: Moiz Uddin', pageWidth / 2, yPos, { align: 'center' });
+                // pdf.text('Created by: Moiz Uddin', pageWidth / 2, yPos, { align: 'center' });
 
                 addPageFooter(pageNum);
 
@@ -2298,9 +2336,31 @@
                 const contentWidth = pageWidth - (2 * margin);
                 let yPos = margin;
 
+                // Load logo as base64
+                const logoImg = new Image();
+                logoImg.src = 'Astound_RGB_KO Green.png';
+                await new Promise((resolve) => {
+                    logoImg.onload = resolve;
+                    logoImg.onerror = resolve; // Continue even if logo fails to load
+                });
+
                 // Header
                 pdf.setFillColor(102, 126, 234);
                 pdf.rect(0, 0, pageWidth, 20, 'F');
+
+                // Add logo to header (left side)
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = logoImg.width;
+                    canvas.height = logoImg.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(logoImg, 0, 0);
+                    const logoDataUrl = canvas.toDataURL('image/png');
+                    pdf.addImage(logoDataUrl, 'PNG', margin, 3, 12, 9);
+                } catch (e) {
+                    console.log('Logo not added to one-page header:', e);
+                }
+
                 pdf.setTextColor(255, 255, 255);
                 pdf.setFontSize(16);
                 pdf.setFont(undefined, 'bold');
